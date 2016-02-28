@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -122,5 +123,33 @@ namespace IncrementalFileCapture
 				+ listBox.Lines.Count();
 		}
 
+		private void btnSaveConfig_Click(object sender, EventArgs e)
+		{
+			if (Directory.Exists(lbSource.Text))
+			{
+
+			}
+			else
+			{
+				LogEntry("Source path was not found: " + lbSource.Text);
+			}
+		}
+
+		private void LogEntry (string str)
+		{
+			AppendLine(
+				tbLog, 
+				DateTime.Now + " : "
+					+ str
+			);
+		}
+
+		public void AppendLine(RichTextBox source, string str)
+		{
+			if (source.Text.Length == 0)
+				source.Text = str;
+			else
+				source.AppendText(System.Environment.NewLine + str);
+		}
 	}
 }

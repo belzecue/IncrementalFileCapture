@@ -43,7 +43,7 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.tbLog = new System.Windows.Forms.TextBox();
+			this.tbLog = new System.Windows.Forms.RichTextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.tbIgnoreMatchingDir = new System.Windows.Forms.RichTextBox();
 			this.lbIgnoreMatchingDir = new System.Windows.Forms.Label();
@@ -321,6 +321,7 @@
 			this.btnSaveConfig.TabIndex = 25;
 			this.btnSaveConfig.Text = "Save Config";
 			this.btnSaveConfig.UseVisualStyleBackColor = true;
+			this.btnSaveConfig.Click += new System.EventHandler(this.btnSaveConfig_Click);
 			// 
 			// label8
 			// 
@@ -390,7 +391,7 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.TextBox tbLog;
+		private System.Windows.Forms.RichTextBox tbLog;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.RichTextBox tbIgnoreMatchingDir;
 		private System.Windows.Forms.Label lbIgnoreMatchingDir;
