@@ -43,15 +43,21 @@ namespace IncrementalFileCapture
 				cbSecond.Items.Add(i);
 			}
 
+			// AM/PM
+
+			cbAMPM.Items.Add("AM");
+			cbAMPM.Items.Add("PM");
+
+
 
 
 		}
 
 		private void btnSource_Click(object sender, EventArgs e)
 		{
-			var directoryPicker = new FolderBrowserDialog();
-			directoryPicker.ShowDialog();
-			lbSource.Text = directoryPicker.SelectedPath;
+			var sourceFolder = new FolderBrowserDialog();
+			sourceFolder.ShowDialog();
+			lbSource.Text = sourceFolder.SelectedPath;
 		}
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -59,9 +65,31 @@ namespace IncrementalFileCapture
 
 		}
 
-		private void label1_Click(object sender, EventArgs e)
+		private void btnTarget_Click(object sender, EventArgs e)
 		{
+			var targetFolder = new FolderBrowserDialog();
+			targetFolder.ShowDialog();
+			lbSource.Text = targetFolder.SelectedPath;
+		}
 
+		private void tbIgnore_Leave(object sender, EventArgs e)
+		{
+			tbIgnore.Lines = tbIgnore.Lines.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToArray<string>();
+
+			lbIgnoreMatching.Text =
+				lbIgnoreMatching.Text.Split(':')[0]
+				+ ": "
+				+ tbIgnore.Lines.Count();
+		}
+
+		private void tbContaining_Leave(object sender, EventArgs e)
+		{
+			tbContaining.Lines = tbContaining.Lines.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToArray<string>();
+
+			lbIgnoreContaining.Text =
+				lbIgnoreContaining.Text.Split(':')[0]
+				+ ": "
+				+ tbContaining.Lines.Count();
 		}
 	}
 }
