@@ -207,20 +207,21 @@
 			// tbLog
 			// 
 			this.tbLog.Location = new System.Drawing.Point(512, 119);
-			this.tbLog.Multiline = true;
 			this.tbLog.Name = "tbLog";
 			this.tbLog.Size = new System.Drawing.Size(484, 530);
 			this.tbLog.TabIndex = 14;
+			this.tbLog.Text = "";
+			this.tbLog.WordWrap = false;
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(907, 96);
+			this.label7.Location = new System.Drawing.Point(960, 96);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(89, 20);
+			this.label7.Size = new System.Drawing.Size(36, 20);
 			this.label7.TabIndex = 15;
-			this.label7.Text = "Activity Log";
+			this.label7.Text = "Log";
 			// 
 			// tbIgnoreMatchingDir
 			// 

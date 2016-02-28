@@ -61,6 +61,8 @@ namespace IncrementalFileCapture
 			var sourceFolder = new FolderBrowserDialog();
 			sourceFolder.ShowDialog();
 			lbSource.Text = sourceFolder.SelectedPath;
+
+			ReadIniFile();
 		}
 
 		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -127,7 +129,10 @@ namespace IncrementalFileCapture
 
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
-			WriteIniFile(lbSource.Text);
+			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
+			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
+			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
+			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
 		}
 
 		private void LogEntry (string str)
@@ -147,28 +152,82 @@ namespace IncrementalFileCapture
 				source.AppendText(System.Environment.NewLine + str);
 		}
 
-		private bool WriteIniFile (string iniPath) {
-
+		private bool WriteIniFileKey(string iniPath, string section, string key, RichTextBox tb)
+		{
 			if (Directory.Exists(iniPath))
 			{
-				IniFile ini = new IniFile(@iniPath + @"\IFC.ini");
+				string iniFilename = @iniPath + @"\IFC.ini";
+				IniFile ini = new IniFile(iniFilename);
 				ini.IniWriteValue(
-					"Exclusions"
-					, "IgnoreMatchingDir"
-					, string.Join("|", tbIgnoreMatchingDir.Lines)
+					section
+					, key
+					, string.Join("|", tb.Lines)
 				);
-				LogEntry("Wrote ini file to: " + ini.path);
+				LogEntry("Wrote to config file: " + iniFilename + ", " + section + ", " + key);
 				return true;
 			}
 			else
 			{
-				LogEntry("Failed to write ini file to: " + iniPath);
+				LogEntry("Failed to write config file, invalid path: " + iniPath);
 				return false;
 			}
-
-
-
-
 		}
+
+		private void ReadIniFile()
+		{
+			tbIgnoreMatchingDir.Clear();
+			tbIgnoreMatchingFile.Clear();
+			tbIgnoreContainingDir.Clear();
+			tbIgnoreContainingFile.Clear();
+
+			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
+			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
+			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
+			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
+		}
+
+
+		private bool ReadIniFileKey(string iniPath, string section, string key, RichTextBox tb)
+		{
+
+			if (Directory.Exists(iniPath))
+			{
+				string iniFilename = @iniPath + @"\IFC.ini";
+				bool iniFileExists = File.Exists(iniFilename);
+
+				if (iniFileExists)
+				{
+					IniFile ini = new IniFile(iniFilename);
+
+					string content = ini.IniReadValue(
+						section
+						, key
+					);
+
+					string[] contents = content.Split('|');
+					foreach (string s in contents)
+					{
+						tb.AppendText(s + System.Environment.NewLine);
+					}
+
+					LogEntry("Read config file: " + iniFilename + ", " + section + ", " + key);
+					return true;
+				}
+				else
+				{
+					LogEntry("No config file found at: " + iniFilename);
+					return false;
+				}
+
+			}
+			else
+			{
+				LogEntry("Failed to read ini file, invalid path: " + iniPath);
+				return false;
+			}
+		}
+
+
+
 	}
 }
