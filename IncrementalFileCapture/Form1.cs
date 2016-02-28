@@ -310,7 +310,15 @@ namespace IncrementalFileCapture
 					// where the file has been deleted since the call to TraverseTree().
 
 
-					LogEntry(fi.FullName + ", " + fi.LastWriteTime);
+					if (fi.LastWriteTime.AddTicks(-(fi.LastWriteTime.Ticks % TimeSpan.TicksPerSecond)) > baseDateTime)
+					{
+						LogEntry("Collecting file: " + fi.FullName + " " + fi.LastWriteTime);
+					} 
+					else
+					{
+						LogEntry("Ignoring file: " + fi.FullName + " " + fi.LastWriteTime);
+
+					}
 
 				}
 
