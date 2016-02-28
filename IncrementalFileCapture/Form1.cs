@@ -15,9 +15,11 @@ namespace IncrementalFileCapture
 {
 	public partial class Form1 : Form
 	{
-		enum hours : int { max = 12, min = 0}
-		enum minutes : int { max = 59, min = 1}
-		enum seconds : int { max = 59, min = 1 }
+		enum hours : int { max = 12, min = 1 }
+		enum minutes : int { max = 59, min = 0 }
+		enum seconds : int { max = 59, min = 0 }
+
+		private DateTime baseDateTime;
 
 		public Form1()
 		{
@@ -229,6 +231,45 @@ namespace IncrementalFileCapture
 
 		private void btnGo_Click(object sender, EventArgs e)
 		{
+			if (
+				string.IsNullOrEmpty(cbHour.Text)
+				|| string.IsNullOrEmpty(cbMinute.Text)
+				|| string.IsNullOrEmpty(cbSecond.Text)
+				|| string.IsNullOrEmpty(cbAMPM.Text)
+				)
+			{
+				LogEntry("Failed to get base time.  Please select a valid date and time.");
+				return;
+			}
+
+			// set the comparison time
+
+			int hourModifier = 0;
+
+			if (cbAMPM.Text == "PM")
+			{
+				if(cbHour.Text != "12")
+				{
+					hourModifier = 12;
+				}
+			} else
+			{
+				if(cbHour.Text == "12")
+				{
+					hourModifier = -12;
+				}
+			}
+
+			baseDateTime = dateTimePicker.Value.Date.AddHours(
+				Convert.ToDouble(cbHour.Text) + hourModifier
+			).AddMinutes(
+				Convert.ToDouble(cbMinute.Text)
+			).AddSeconds(
+				Convert.ToDouble(cbSecond.Text)
+			);
+
+			LogEntry("Base time for file checking is: " + baseDateTime.ToString());
+
 			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(@lbSource.Text);
 			WalkDirectoryTree(root);
 		}
@@ -267,7 +308,10 @@ namespace IncrementalFileCapture
 					// want to open, delete or modify the file, then
 					// a try-catch block is required here to handle the case
 					// where the file has been deleted since the call to TraverseTree().
-					LogEntry(fi.FullName);
+
+
+					LogEntry(fi.FullName + ", " + fi.LastWriteTime);
+
 				}
 
 				// Now find all the subdirectories under this directory.

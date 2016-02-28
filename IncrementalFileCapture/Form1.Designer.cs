@@ -32,7 +32,7 @@
 			this.btnTarget = new System.Windows.Forms.Button();
 			this.lbTarget = new System.Windows.Forms.Label();
 			this.lbSource = new System.Windows.Forms.Label();
-			this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+			this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
 			this.cbHour = new System.Windows.Forms.ComboBox();
 			this.cbMinute = new System.Windows.Forms.ComboBox();
 			this.cbSecond = new System.Windows.Forms.ComboBox();
@@ -108,13 +108,13 @@
 			this.lbSource.TabIndex = 4;
 			this.lbSource.Text = "Please select...";
 			// 
-			// dateTimePicker1
+			// dateTimePicker
 			// 
-			this.dateTimePicker1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.dateTimePicker1.Location = new System.Drawing.Point(130, 226);
-			this.dateTimePicker1.Name = "dateTimePicker1";
-			this.dateTimePicker1.Size = new System.Drawing.Size(366, 32);
-			this.dateTimePicker1.TabIndex = 5;
+			this.dateTimePicker.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.dateTimePicker.Location = new System.Drawing.Point(130, 226);
+			this.dateTimePicker.Name = "dateTimePicker";
+			this.dateTimePicker.Size = new System.Drawing.Size(366, 32);
+			this.dateTimePicker.TabIndex = 5;
 			// 
 			// cbHour
 			// 
@@ -364,7 +364,7 @@
 			this.Controls.Add(this.cbSecond);
 			this.Controls.Add(this.cbMinute);
 			this.Controls.Add(this.cbHour);
-			this.Controls.Add(this.dateTimePicker1);
+			this.Controls.Add(this.dateTimePicker);
 			this.Controls.Add(this.lbSource);
 			this.Controls.Add(this.lbTarget);
 			this.Controls.Add(this.btnTarget);
@@ -382,7 +382,7 @@
 		private System.Windows.Forms.Button btnTarget;
 		private System.Windows.Forms.Label lbTarget;
 		private System.Windows.Forms.Label lbSource;
-		private System.Windows.Forms.DateTimePicker dateTimePicker1;
+		private System.Windows.Forms.DateTimePicker dateTimePicker;
 		private System.Windows.Forms.ComboBox cbHour;
 		private System.Windows.Forms.ComboBox cbMinute;
 		private System.Windows.Forms.ComboBox cbSecond;
