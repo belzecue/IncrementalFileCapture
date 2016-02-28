@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Ini;
+
 namespace IncrementalFileCapture
 {
 	public partial class Form1 : Form
@@ -125,14 +127,7 @@ namespace IncrementalFileCapture
 
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
-			if (Directory.Exists(lbSource.Text))
-			{
-
-			}
-			else
-			{
-				LogEntry("Source path was not found: " + lbSource.Text);
-			}
+			WriteIniFile(lbSource.Text);
 		}
 
 		private void LogEntry (string str)
@@ -144,12 +139,36 @@ namespace IncrementalFileCapture
 			);
 		}
 
-		public void AppendLine(RichTextBox source, string str)
+		private void AppendLine(RichTextBox source, string str)
 		{
 			if (source.Text.Length == 0)
 				source.Text = str;
 			else
 				source.AppendText(System.Environment.NewLine + str);
+		}
+
+		private bool WriteIniFile (string iniPath) {
+
+			if (Directory.Exists(iniPath))
+			{
+				IniFile ini = new IniFile(@iniPath + @"\IFC.ini");
+				ini.IniWriteValue(
+					"Exclusions"
+					, "IgnoreMatchingDir"
+					, string.Join("|", tbIgnoreMatchingDir.Lines)
+				);
+				LogEntry("Wrote ini file to: " + ini.path);
+				return true;
+			}
+			else
+			{
+				LogEntry("Failed to write ini file to: " + iniPath);
+				return false;
+			}
+
+
+
+
 		}
 	}
 }
