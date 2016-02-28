@@ -75,27 +75,27 @@ namespace IncrementalFileCapture
 		private void tbIgnoreMatchingDir_Leave(object sender, EventArgs e)
 		{
 			tbIgnoreMatchingDir.Lines = StripBlankLines(tbIgnoreMatchingDir.Lines);
-			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(lbIgnoreMatchingDir.Text);
+			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(tbIgnoreMatchingDir, lbIgnoreMatchingDir);
 
 		}
 
 		private void tbIgnoreMatchingFile_Leave(object sender, EventArgs e)
 		{
 			tbIgnoreMatchingFile.Lines = StripBlankLines(tbIgnoreMatchingFile.Lines);
-			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(lbIgnoreMatchingFile.Text);
+			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(tbIgnoreMatchingFile, lbIgnoreMatchingFile);
 		}
 
 		private void tbIgnoreContainingDir_Leave(object sender, EventArgs e)
 		{
 			tbIgnoreContainingDir.Lines = StripBlankLines(tbIgnoreContainingDir.Lines);
-			lbIgnoreContainingDir.Text = UpdateListBoxLabel(lbIgnoreContainingDir.Text);
+			lbIgnoreContainingDir.Text = UpdateListBoxLabel(tbIgnoreContainingDir, lbIgnoreContainingDir);
 
 		}
 
 		private void tbIgnoreContainingFile_Leave(object sender, EventArgs e)
 		{
 			tbIgnoreContainingFile.Lines = StripBlankLines(tbIgnoreContainingFile.Lines);
-			lbIgnoreContainingFile.Text = UpdateListBoxLabel(lbIgnoreContainingFile.Text);
+			lbIgnoreContainingFile.Text = UpdateListBoxLabel(tbIgnoreContainingFile, lbIgnoreContainingFile);
 		}
 
 		private string[] StripBlankLines (string[] strList)
@@ -107,17 +107,19 @@ namespace IncrementalFileCapture
 			}
 
 			// flush any blank lines and make the list distinct
-			return strList = strList.Where(
+			strList = strList.Where(
 				s => !string.IsNullOrWhiteSpace(s)
 			).Distinct().ToArray<string>();
 
+			return strList.OrderBy(s => s).ToArray<string>();
+
 		}
 
-		private string UpdateListBoxLabel (string theString)
+		private string UpdateListBoxLabel (RichTextBox listBox, Label label)
 		{
-			return lbIgnoreMatchingDir.Text.Split(':')[0]
+			return label.Text.Split(':')[0]
 				+ ": "
-				+ tbIgnoreMatchingDir.Lines.Count();
+				+ listBox.Lines.Count();
 		}
 
 	}
