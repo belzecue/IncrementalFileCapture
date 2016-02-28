@@ -72,24 +72,53 @@ namespace IncrementalFileCapture
 			lbSource.Text = targetFolder.SelectedPath;
 		}
 
-		private void tbIgnore_Leave(object sender, EventArgs e)
+		private void tbIgnoreMatchingDir_Leave(object sender, EventArgs e)
 		{
-			tbIgnore.Lines = tbIgnore.Lines.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToArray<string>();
+			tbIgnoreMatchingDir.Lines = StripBlankLines(tbIgnoreMatchingDir.Lines);
+			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(lbIgnoreMatchingDir.Text);
 
-			lbIgnoreMatching.Text =
-				lbIgnoreMatching.Text.Split(':')[0]
-				+ ": "
-				+ tbIgnore.Lines.Count();
 		}
 
-		private void tbContaining_Leave(object sender, EventArgs e)
+		private void tbIgnoreMatchingFile_Leave(object sender, EventArgs e)
 		{
-			tbContaining.Lines = tbContaining.Lines.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToArray<string>();
-
-			lbIgnoreContaining.Text =
-				lbIgnoreContaining.Text.Split(':')[0]
-				+ ": "
-				+ tbContaining.Lines.Count();
+			tbIgnoreMatchingFile.Lines = StripBlankLines(tbIgnoreMatchingFile.Lines);
+			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(lbIgnoreMatchingFile.Text);
 		}
+
+		private void tbIgnoreContainingDir_Leave(object sender, EventArgs e)
+		{
+			tbIgnoreContainingDir.Lines = StripBlankLines(tbIgnoreContainingDir.Lines);
+			lbIgnoreContainingDir.Text = UpdateListBoxLabel(lbIgnoreContainingDir.Text);
+
+		}
+
+		private void tbIgnoreContainingFile_Leave(object sender, EventArgs e)
+		{
+			tbIgnoreContainingFile.Lines = StripBlankLines(tbIgnoreContainingFile.Lines);
+			lbIgnoreContainingFile.Text = UpdateListBoxLabel(lbIgnoreContainingFile.Text);
+		}
+
+		private string[] StripBlankLines (string[] strList)
+		{
+			// trim leading and trailing whitespace
+			for (int i = 0; i < strList.Length; i++)
+			{
+				strList[i] = strList[i].Trim();
+			}
+
+			// flush any blank lines and make the list distinct
+			return strList = strList.Where(
+				s => !string.IsNullOrWhiteSpace(s)
+			).Distinct().ToArray<string>();
+
+		}
+
+		private string UpdateListBoxLabel (string theString)
+		{
+			return lbIgnoreMatchingDir.Text.Split(':')[0]
+				+ ": "
+				+ tbIgnoreMatchingDir.Lines.Count();
+		}
+
 	}
 }

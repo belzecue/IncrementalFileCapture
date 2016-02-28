@@ -45,10 +45,15 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.tbLog = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
-			this.tbIgnore = new System.Windows.Forms.TextBox();
-			this.lbIgnoreMatching = new System.Windows.Forms.Label();
-			this.lbIgnoreContaining = new System.Windows.Forms.Label();
-			this.tbContaining = new System.Windows.Forms.TextBox();
+			this.tbIgnoreMatchingDir = new System.Windows.Forms.TextBox();
+			this.lbIgnoreMatchingDir = new System.Windows.Forms.Label();
+			this.lbIgnoreContainingDir = new System.Windows.Forms.Label();
+			this.tbIgnoreContainingDir = new System.Windows.Forms.TextBox();
+			this.btnGo = new System.Windows.Forms.Button();
+			this.lbIgnoreContainingFile = new System.Windows.Forms.Label();
+			this.tbIgnoreContainingFile = new System.Windows.Forms.TextBox();
+			this.lbIgnoreMatchingFile = new System.Windows.Forms.Label();
+			this.tbIgnoreMatchingFile = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// btnSource
@@ -199,71 +204,126 @@
 			// 
 			// tbLog
 			// 
-			this.tbLog.Location = new System.Drawing.Point(12, 524);
+			this.tbLog.Location = new System.Drawing.Point(512, 45);
 			this.tbLog.Multiline = true;
 			this.tbLog.Name = "tbLog";
-			this.tbLog.Size = new System.Drawing.Size(484, 125);
+			this.tbLog.Size = new System.Drawing.Size(484, 604);
 			this.tbLog.TabIndex = 14;
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
 			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.Location = new System.Drawing.Point(8, 501);
+			this.label7.Location = new System.Drawing.Point(508, 22);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(89, 20);
 			this.label7.TabIndex = 15;
 			this.label7.Text = "Activity Log";
 			// 
-			// tbIgnore
+			// tbIgnoreMatchingDir
 			// 
-			this.tbIgnore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tbIgnore.Location = new System.Drawing.Point(13, 358);
-			this.tbIgnore.Multiline = true;
-			this.tbIgnore.Name = "tbIgnore";
-			this.tbIgnore.Size = new System.Drawing.Size(240, 125);
-			this.tbIgnore.TabIndex = 16;
-			this.tbIgnore.Leave += new System.EventHandler(this.tbIgnore_Leave);
+			this.tbIgnoreMatchingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbIgnoreMatchingDir.Location = new System.Drawing.Point(13, 358);
+			this.tbIgnoreMatchingDir.Multiline = true;
+			this.tbIgnoreMatchingDir.Name = "tbIgnoreMatchingDir";
+			this.tbIgnoreMatchingDir.Size = new System.Drawing.Size(240, 125);
+			this.tbIgnoreMatchingDir.TabIndex = 16;
+			this.tbIgnoreMatchingDir.Leave += new System.EventHandler(this.tbIgnoreMatchingDir_Leave);
 			// 
-			// lbIgnoreMatching
+			// lbIgnoreMatchingDir
 			// 
-			this.lbIgnoreMatching.AutoSize = true;
-			this.lbIgnoreMatching.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lbIgnoreMatching.Location = new System.Drawing.Point(13, 335);
-			this.lbIgnoreMatching.Name = "lbIgnoreMatching";
-			this.lbIgnoreMatching.Size = new System.Drawing.Size(206, 20);
-			this.lbIgnoreMatching.TabIndex = 17;
-			this.lbIgnoreMatching.Text = "Ignore Dir Names Matching:";
+			this.lbIgnoreMatchingDir.AutoSize = true;
+			this.lbIgnoreMatchingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbIgnoreMatchingDir.Location = new System.Drawing.Point(13, 335);
+			this.lbIgnoreMatchingDir.Name = "lbIgnoreMatchingDir";
+			this.lbIgnoreMatchingDir.Size = new System.Drawing.Size(206, 20);
+			this.lbIgnoreMatchingDir.TabIndex = 17;
+			this.lbIgnoreMatchingDir.Text = "Ignore Dir Names Matching:";
 			// 
-			// lbIgnoreContaining
+			// lbIgnoreContainingDir
 			// 
-			this.lbIgnoreContaining.AutoSize = true;
-			this.lbIgnoreContaining.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lbIgnoreContaining.Location = new System.Drawing.Point(253, 335);
-			this.lbIgnoreContaining.Name = "lbIgnoreContaining";
-			this.lbIgnoreContaining.Size = new System.Drawing.Size(217, 20);
-			this.lbIgnoreContaining.TabIndex = 19;
-			this.lbIgnoreContaining.Text = "Ignore Dir Names Containing:";
+			this.lbIgnoreContainingDir.AutoSize = true;
+			this.lbIgnoreContainingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbIgnoreContainingDir.Location = new System.Drawing.Point(253, 335);
+			this.lbIgnoreContainingDir.Name = "lbIgnoreContainingDir";
+			this.lbIgnoreContainingDir.Size = new System.Drawing.Size(217, 20);
+			this.lbIgnoreContainingDir.TabIndex = 19;
+			this.lbIgnoreContainingDir.Text = "Ignore Dir Names Containing:";
 			// 
-			// tbContaining
+			// tbIgnoreContainingDir
 			// 
-			this.tbContaining.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tbContaining.Location = new System.Drawing.Point(252, 358);
-			this.tbContaining.Multiline = true;
-			this.tbContaining.Name = "tbContaining";
-			this.tbContaining.Size = new System.Drawing.Size(244, 125);
-			this.tbContaining.TabIndex = 18;
-			this.tbContaining.Leave += new System.EventHandler(this.tbContaining_Leave);
+			this.tbIgnoreContainingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbIgnoreContainingDir.Location = new System.Drawing.Point(252, 358);
+			this.tbIgnoreContainingDir.Multiline = true;
+			this.tbIgnoreContainingDir.Name = "tbIgnoreContainingDir";
+			this.tbIgnoreContainingDir.Size = new System.Drawing.Size(244, 125);
+			this.tbIgnoreContainingDir.TabIndex = 18;
+			this.tbIgnoreContainingDir.Leave += new System.EventHandler(this.tbIgnoreContainingDir_Leave);
+			// 
+			// btnGo
+			// 
+			this.btnGo.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnGo.Location = new System.Drawing.Point(12, 195);
+			this.btnGo.Name = "btnGo";
+			this.btnGo.Size = new System.Drawing.Size(95, 93);
+			this.btnGo.TabIndex = 20;
+			this.btnGo.Text = "RUN";
+			this.btnGo.UseVisualStyleBackColor = true;
+			// 
+			// lbIgnoreContainingFile
+			// 
+			this.lbIgnoreContainingFile.AutoSize = true;
+			this.lbIgnoreContainingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbIgnoreContainingFile.Location = new System.Drawing.Point(253, 501);
+			this.lbIgnoreContainingFile.Name = "lbIgnoreContainingFile";
+			this.lbIgnoreContainingFile.Size = new System.Drawing.Size(217, 20);
+			this.lbIgnoreContainingFile.TabIndex = 24;
+			this.lbIgnoreContainingFile.Text = "Ignore Dir Names Containing:";
+			// 
+			// tbIgnoreContainingFile
+			// 
+			this.tbIgnoreContainingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbIgnoreContainingFile.Location = new System.Drawing.Point(252, 524);
+			this.tbIgnoreContainingFile.Multiline = true;
+			this.tbIgnoreContainingFile.Name = "tbIgnoreContainingFile";
+			this.tbIgnoreContainingFile.Size = new System.Drawing.Size(244, 125);
+			this.tbIgnoreContainingFile.TabIndex = 23;
+			this.tbIgnoreContainingFile.Leave += new System.EventHandler(this.tbIgnoreContainingFile_Leave);
+			// 
+			// lbIgnoreMatchingFile
+			// 
+			this.lbIgnoreMatchingFile.AutoSize = true;
+			this.lbIgnoreMatchingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbIgnoreMatchingFile.Location = new System.Drawing.Point(13, 501);
+			this.lbIgnoreMatchingFile.Name = "lbIgnoreMatchingFile";
+			this.lbIgnoreMatchingFile.Size = new System.Drawing.Size(206, 20);
+			this.lbIgnoreMatchingFile.TabIndex = 22;
+			this.lbIgnoreMatchingFile.Text = "Ignore Dir Names Matching:";
+			// 
+			// tbIgnoreMatchingFile
+			// 
+			this.tbIgnoreMatchingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbIgnoreMatchingFile.Location = new System.Drawing.Point(13, 524);
+			this.tbIgnoreMatchingFile.Multiline = true;
+			this.tbIgnoreMatchingFile.Name = "tbIgnoreMatchingFile";
+			this.tbIgnoreMatchingFile.Size = new System.Drawing.Size(240, 125);
+			this.tbIgnoreMatchingFile.TabIndex = 21;
+			this.tbIgnoreMatchingFile.Leave += new System.EventHandler(this.tbIgnoreMatchingFile_Leave);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(509, 661);
-			this.Controls.Add(this.lbIgnoreContaining);
-			this.Controls.Add(this.tbContaining);
-			this.Controls.Add(this.lbIgnoreMatching);
-			this.Controls.Add(this.tbIgnore);
+			this.ClientSize = new System.Drawing.Size(1008, 661);
+			this.Controls.Add(this.lbIgnoreContainingFile);
+			this.Controls.Add(this.tbIgnoreContainingFile);
+			this.Controls.Add(this.lbIgnoreMatchingFile);
+			this.Controls.Add(this.tbIgnoreMatchingFile);
+			this.Controls.Add(this.btnGo);
+			this.Controls.Add(this.lbIgnoreContainingDir);
+			this.Controls.Add(this.tbIgnoreContainingDir);
+			this.Controls.Add(this.lbIgnoreMatchingDir);
+			this.Controls.Add(this.tbIgnoreMatchingDir);
 			this.Controls.Add(this.label7);
 			this.Controls.Add(this.tbLog);
 			this.Controls.Add(this.label4);
@@ -307,10 +367,15 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox tbLog;
 		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.TextBox tbIgnore;
-		private System.Windows.Forms.Label lbIgnoreMatching;
-		private System.Windows.Forms.Label lbIgnoreContaining;
-		private System.Windows.Forms.TextBox tbContaining;
+		private System.Windows.Forms.TextBox tbIgnoreMatchingDir;
+		private System.Windows.Forms.Label lbIgnoreMatchingDir;
+		private System.Windows.Forms.Label lbIgnoreContainingDir;
+		private System.Windows.Forms.TextBox tbIgnoreContainingDir;
+		private System.Windows.Forms.Button btnGo;
+		private System.Windows.Forms.Label lbIgnoreContainingFile;
+		private System.Windows.Forms.TextBox tbIgnoreContainingFile;
+		private System.Windows.Forms.Label lbIgnoreMatchingFile;
+		private System.Windows.Forms.TextBox tbIgnoreMatchingFile;
 	}
 }
 
