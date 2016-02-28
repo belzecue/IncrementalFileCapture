@@ -76,7 +76,7 @@
 			this.btnTarget.Name = "btnTarget";
 			this.btnTarget.Size = new System.Drawing.Size(95, 44);
 			this.btnTarget.TabIndex = 1;
-			this.btnTarget.Text = "Save To Folder";
+			this.btnTarget.Text = "Copy To Folder";
 			this.btnTarget.UseVisualStyleBackColor = true;
 			this.btnTarget.Click += new System.EventHandler(this.btnTarget_Click);
 			// 
@@ -272,6 +272,7 @@
 			this.btnGo.TabIndex = 20;
 			this.btnGo.Text = "RUN";
 			this.btnGo.UseVisualStyleBackColor = true;
+			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
 			// 
 			// lbIgnoreContainingFile
 			// 
