@@ -20,14 +20,17 @@ namespace IncrementalFileCapture
 		enum seconds : int { max = 59, min = 0 }
 
 		private DateTime baseDateTime;
-		private string awaitingInputText = "Please select...";
+		private string pleaseSelectText = "Please select...";
+
+		private int filesCopied;
+		private int runErrors;
 
 		public Form1()
 		{
 			InitializeComponent();
 
-			lbSource.Text = Sanitize(lbSource.Text);
-			lbTarget.Text = Sanitize(lbTarget.Text);
+			rtbSource.Text = Sanitize(rtbSource.Text);
+			rtbTarget.Text = Sanitize(rtbTarget.Text);
 
 			// populate Time hour/min/second dropdowns
 
@@ -66,42 +69,42 @@ namespace IncrementalFileCapture
 		{
 			var sourceFolder = new FolderBrowserDialog();
 			sourceFolder.ShowDialog();
-			lbSource.Text = sourceFolder.SelectedPath;
+			rtbSource.Text = sourceFolder.SelectedPath;
 
-			if (CheckPathRoot(lbSource.Text) == 0) ReadIniFile();
+			if (CheckPathRoot(rtbSource.Text) == 0) ReadIniFile();
 		}
 
 		private void btnTarget_Click(object sender, EventArgs e)
 		{
 			var targetFolder = new FolderBrowserDialog();
 			targetFolder.ShowDialog();
-			lbTarget.Text = targetFolder.SelectedPath;
+			rtbTarget.Text = targetFolder.SelectedPath;
 		}
 
 		private void tbIgnoreMatchingDir_Leave(object sender, EventArgs e)
 		{
-			tbIgnoreMatchingDir.Lines = StripBlankLines(tbIgnoreMatchingDir.Lines);
-			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(tbIgnoreMatchingDir, lbIgnoreMatchingDir);
+			rtbIgnoreMatchingDir.Lines = StripBlankLines(rtbIgnoreMatchingDir.Lines);
+			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(rtbIgnoreMatchingDir, lbIgnoreMatchingDir);
 
 		}
 
 		private void tbIgnoreMatchingFile_Leave(object sender, EventArgs e)
 		{
-			tbIgnoreMatchingFile.Lines = StripBlankLines(tbIgnoreMatchingFile.Lines);
-			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(tbIgnoreMatchingFile, lbIgnoreMatchingFile);
+			rtbIgnoreMatchingFile.Lines = StripBlankLines(rtbIgnoreMatchingFile.Lines);
+			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(rtbIgnoreMatchingFile, lbIgnoreMatchingFile);
 		}
 
 		private void tbIgnoreContainingDir_Leave(object sender, EventArgs e)
 		{
-			tbIgnoreContainingDir.Lines = StripBlankLines(tbIgnoreContainingDir.Lines);
-			lbIgnoreContainingDir.Text = UpdateListBoxLabel(tbIgnoreContainingDir, lbIgnoreContainingDir);
+			rtbIgnoreContainingDir.Lines = StripBlankLines(rtbIgnoreContainingDir.Lines);
+			lbIgnoreContainingDir.Text = UpdateListBoxLabel(rtbIgnoreContainingDir, lbIgnoreContainingDir);
 
 		}
 
 		private void tbIgnoreContainingFile_Leave(object sender, EventArgs e)
 		{
-			tbIgnoreContainingFile.Lines = StripBlankLines(tbIgnoreContainingFile.Lines);
-			lbIgnoreContainingFile.Text = UpdateListBoxLabel(tbIgnoreContainingFile, lbIgnoreContainingFile);
+			rtbIgnoreContainingFile.Lines = StripBlankLines(rtbIgnoreContainingFile.Lines);
+			lbIgnoreContainingFile.Text = UpdateListBoxLabel(rtbIgnoreContainingFile, lbIgnoreContainingFile);
 		}
 
 		private string[] StripBlankLines (string[] strList)
@@ -130,9 +133,18 @@ namespace IncrementalFileCapture
 			);
 		}
 
+		private void UpdateLogLabel(RichTextBox listBox, Label label)
+		{
+			label.Text = String.Format(
+				"{0}: {1}"
+				, label.Text.Split(':')[0]
+				, runErrors + " errors during last job"
+			);
+		}
+
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
-			if (lbSource.Text == awaitingInputText)
+			if (rtbSource.Text == pleaseSelectText)
 			{
 				LogEntry("ERROR!  Please select a valid source folder.");
 				return;
@@ -142,34 +154,27 @@ namespace IncrementalFileCapture
 
 		private void LogEntry (string str)
 		{
-			Color textOrig = tbLog.SelectionColor;
+			Color textOrig = rtbLog.SelectionColor;
 
 			if (str.StartsWith("ERROR!"))
 			{
-				tbLog.SelectionColor = Color.Red;
-
-				AppendLine(
-					tbLog
-					, string.Format(
-						"{0} {1}"
-						, DateTime.Now
-						, str
-						)
-				);
-
-				tbLog.SelectionColor = textOrig;
+				rtbLog.SelectionColor = Color.Red;
 			}
-			else
+			else if (str.StartsWith("INFO*"))
 			{
-				AppendLine(
-					tbLog
-					, string.Format(
-						"{0} {1}"
-						, DateTime.Now
-						, str
-						)
-				);
+				rtbLog.SelectionColor = Color.Blue;
 			}
+
+			AppendLine(
+				rtbLog
+				, string.Format(
+					"{0} {1}"
+					, DateTime.Now
+					, str
+					)
+			);
+
+			rtbLog.SelectionColor = textOrig;
 		}
 
 		private void AppendLine(RichTextBox source, string str)
@@ -179,7 +184,7 @@ namespace IncrementalFileCapture
 
 		private bool WriteIniFile()
 		{
-			string iniPath = Sanitize(lbSource.Text);
+			string iniPath = Sanitize(rtbSource.Text);
 
 			if (Directory.Exists(iniPath))
 			{
@@ -196,21 +201,25 @@ namespace IncrementalFileCapture
 					LogEntry("Writing config file at " + iniFilename);
 				}
 
-				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
-				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
-				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
-				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
+				WriteIniFileKeyString(iniFilename, "Paths", "sourceDir", rtbSource.Text);
+				WriteIniFileKeyString(iniFilename, "Paths", "targetDir", rtbTarget.Text);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingFile", rtbIgnoreContainingFile);
 
 				return true;
 			}
 			else
 			{
 				LogEntry("ERROR!  Failed to write ini file, invalid path: " + iniPath);
+				runErrors++;
 				return false;
 			}
 		}
 
-		private void WriteIniFileKey(string iniFilename, string section, string key, RichTextBox tb)
+		private void WriteIniFileKeyForRTB(string iniFilename, string section, string key, RichTextBox tb)
 		{
 			IniFile ini = new IniFile(iniFilename);
 
@@ -229,9 +238,28 @@ namespace IncrementalFileCapture
 			);
 		}
 
+		private void WriteIniFileKeyString(string iniFilename, string section, string key, string value)
+		{
+			IniFile ini = new IniFile(iniFilename);
+
+			ini.IniWriteValue(
+				section
+				, key
+				, value
+			);
+
+			LogEntry(
+				String.Format(
+					"Wrote config key value: {0}, {1}"
+					, section
+					, key
+				)
+			);
+		}
+
 		private bool ReadIniFile()
 		{
-			string iniPath = Sanitize(lbSource.Text);
+			string iniPath = Sanitize(rtbSource.Text);
 
 			if (Directory.Exists(iniPath))
 			{
@@ -242,20 +270,22 @@ namespace IncrementalFileCapture
 				{
 					LogEntry("Found config file at " + iniFilename);
 
-					tbIgnoreMatchingDir.Clear();
-					tbIgnoreMatchingFile.Clear();
-					tbIgnoreContainingDir.Clear();
-					tbIgnoreContainingFile.Clear();
+					rtbIgnoreMatchingDir.Clear();
+					rtbIgnoreMatchingFile.Clear();
+					rtbIgnoreContainingDir.Clear();
+					rtbIgnoreContainingFile.Clear();
 
-					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
-					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
-					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
-					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
+					ReadIniFileKeyForLabel(iniFilename, "Paths", "sourceDir", rtbSource);
+					ReadIniFileKeyForLabel(iniFilename, "Paths", "targetDir", rtbTarget);
+					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
+					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
+					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
+					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingFile", rtbIgnoreContainingFile);
 					return true;
 				}
 				else
 				{
-					LogEntry("INFO! No config file found at: " + iniFilename);
+					LogEntry("No config file found at: " + iniFilename);
 					return false;
 				}
 			}
@@ -267,7 +297,7 @@ namespace IncrementalFileCapture
 		}
 
 
-		private void ReadIniFileKey(string iniFilename, string section, string key, RichTextBox tb)
+		private void ReadIniFileKeyForRTB(string iniFilename, string section, string key, RichTextBox tb)
 		{
 			IniFile ini = new IniFile(iniFilename);
 
@@ -291,11 +321,34 @@ namespace IncrementalFileCapture
 			);
 		}
 
+		private void ReadIniFileKeyForLabel(string iniFilename, string section, string key, Label label)
+		{
+			IniFile ini = new IniFile(iniFilename);
+
+			string result = ini.IniReadValue(
+				section
+				, key
+			);
+
+			label.Text = (Sanitize(result) == pleaseSelectText) ?
+				label.Text
+				: result
+				;
+
+			LogEntry(
+				String.Format(
+					"Read config key value: {0}, {1}"
+					, section
+					, key
+				)
+			);
+		}
+
 		private void btnGo_Click(object sender, EventArgs e)
 		{
 			if (
-				lbSource.Text == awaitingInputText
-				|| lbTarget.Text == awaitingInputText
+				rtbSource.Text == pleaseSelectText
+				|| rtbTarget.Text == pleaseSelectText
 				)
 			{
 				LogEntry("ERROR!  Please select valid source and target folders.");
@@ -313,8 +366,8 @@ namespace IncrementalFileCapture
 			}
 
 			if(
-				CheckPathRoot(lbSource.Text) == 1
-				|| CheckPathRoot(lbTarget.Text) == 1
+				CheckPathRoot(rtbSource.Text) == 1
+				|| CheckPathRoot(rtbTarget.Text) == 1
 			)
 			{
 				LogEntry("ERROR!  Source and Target cannot be root folders.");
@@ -322,6 +375,11 @@ namespace IncrementalFileCapture
 			}
 
 			btnGo.Enabled = false;
+
+			filesCopied = 0;
+			runErrors = 0;
+
+			LogEntry("---------- Starting ...");
 
 			// set the comparison time
 
@@ -356,17 +414,22 @@ namespace IncrementalFileCapture
 				)
 			);
 
-			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(lbSource.Text));
+			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(rtbSource.Text));
 			WalkDirectoryTree(root);
 
 			btnGo.Enabled = true;
+
+			LogEntry("INFO* Files copied: " + filesCopied);
+			LogEntry("---------- Finished.");
+			UpdateLogLabel(rtbLog, lbLog);
+			LogEntry("runerrors: " + runErrors);
 		}
 
 		private string Sanitize (string inStr)
 		{
 			if (string.IsNullOrWhiteSpace(inStr))
 			{
-				return awaitingInputText;
+				return pleaseSelectText;
 			}
 			else
 			{
@@ -423,7 +486,9 @@ namespace IncrementalFileCapture
 
 						// copy the file to target, including paths
 
-						if (CopyFile(fi.FullName, fi.Name))
+						int result = CopyFile(fi.FullName, fi.Name);
+
+						if ( result == 0)
 						{
 							LogEntry(
 								string.Format(
@@ -431,8 +496,9 @@ namespace IncrementalFileCapture
 									, fi.FullName
 								)
 							);
+							filesCopied++;
 						}
-						else
+						else if (result == -1)
 						{
 							LogEntry(
 								string.Format(
@@ -440,8 +506,17 @@ namespace IncrementalFileCapture
 									, fi.FullName
 								)
 							);
+							runErrors++;
 						}
-
+						else if (result == 1)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file: {0}"
+									, fi.FullName
+								)
+							);
+						}
 					} 
 					else
 					{
@@ -538,29 +613,30 @@ namespace IncrementalFileCapture
 
 		}
 
-		private bool CopyFile (string sourceFullName, string sourceName)
+		private int CopyFile (string sourceFullName, string sourceName)
 		{
-			if (sourceName == "IFC.ini") return true;
+			// return values
+			// -1 = exception; 0 = success; 1 = skipped
+
+			if (sourceName == "IFC.ini") return 1;
 
 			string targetFilename = sourceFullName.Replace(
-				lbSource.Text
-				, lbTarget.Text
+				rtbSource.Text
+				, rtbTarget.Text
 			);
-
-			//LogEntry("targetfilename = " + targetFilename);
 
 			try {
 				DirectoryInfo thePath = Directory.CreateDirectory(targetFilename.Replace('\\' + sourceName, ""));
 				File.Copy(
 					sourceFullName
 					, targetFilename
-					, true
+					, false
 				);
-				return true;
+				return 0;
 			}
 			catch (Exception e) {
 				LogEntry(e.Message);
-				return false;
+				return -1;
 			}
 		}
 
