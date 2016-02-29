@@ -37,6 +37,7 @@ namespace IncrementalFileCapture
 			{
 				cbHour.Items.Add(i);
 			}
+			cbHour.SelectedItem = (int)hours.max;
 
 			// minutes
 
@@ -44,6 +45,7 @@ namespace IncrementalFileCapture
 			{
 				cbMinute.Items.Add(i);
 			}
+			cbMinute.SelectedItem = (int)minutes.min;
 
 			// seconds
 
@@ -51,11 +53,13 @@ namespace IncrementalFileCapture
 			{
 				cbSecond.Items.Add(i);
 			}
+			cbSecond.SelectedItem = (int)seconds.min;
 
 			// AM/PM
 
 			cbAMPM.Items.Add("AM");
 			cbAMPM.Items.Add("PM");
+			cbAMPM.SelectedItem = "AM";
 		}
 
 		private void btnSource_Click(object sender, EventArgs e)
@@ -64,7 +68,7 @@ namespace IncrementalFileCapture
 			sourceFolder.ShowDialog();
 			lbSource.Text = sourceFolder.SelectedPath;
 
-			ReadIniFile();
+			if (CheckPathRoot(lbSource.Text) == 0) ReadIniFile();
 		}
 
 		private void btnTarget_Click(object sender, EventArgs e)
@@ -143,16 +147,16 @@ namespace IncrementalFileCapture
 			if (str.StartsWith("ERROR!"))
 			{
 				tbLog.SelectionColor = Color.Red;
-				tbLog.SelectedRtf = String.Format(
-					@"{0}\rtf1\ansi {1} \line{2}"
-					, '{'
+
+				AppendLine(
+					tbLog
 					, string.Format(
-						@"{0} {1}"
+						"{0} {1}"
 						, DateTime.Now
 						, str
 						)
-					, '}'
 				);
+
 				tbLog.SelectionColor = textOrig;
 			}
 			else
@@ -160,7 +164,7 @@ namespace IncrementalFileCapture
 				AppendLine(
 					tbLog
 					, string.Format(
-						@"{0} {1}"
+						"{0} {1}"
 						, DateTime.Now
 						, str
 						)
@@ -170,9 +174,6 @@ namespace IncrementalFileCapture
 
 		private void AppendLine(RichTextBox source, string str)
 		{
-			//if (source.Text.Length == 0)
-			//	source.Text = str;
-			//else
 			source.AppendText(str + System.Environment.NewLine);
 		}
 
@@ -182,7 +183,7 @@ namespace IncrementalFileCapture
 
 			if (Directory.Exists(iniPath))
 			{
-				string iniFilename = @iniPath + @"\IFC.ini";
+				string iniFilename = iniPath + @"\IFC.ini";
 				bool iniFileExists = File.Exists(iniFilename);
 
 				if (iniFileExists)
@@ -234,7 +235,7 @@ namespace IncrementalFileCapture
 
 			if (Directory.Exists(iniPath))
 			{
-				string iniFilename = @iniPath + @"\IFC.ini";
+				string iniFilename = iniPath + @"\IFC.ini";
 				bool iniFileExists = File.Exists(iniFilename);
 
 				if (iniFileExists)
@@ -254,7 +255,7 @@ namespace IncrementalFileCapture
 				}
 				else
 				{
-					LogEntry("ERROR! No config file found at: " + iniFilename);
+					LogEntry("INFO! No config file found at: " + iniFilename);
 					return false;
 				}
 			}
@@ -278,7 +279,7 @@ namespace IncrementalFileCapture
 			string[] contents = content.Split('|');
 			foreach (string s in contents)
 			{
-				tb.AppendText(s + System.Environment.NewLine);
+				AppendLine(tb, s);
 			}
 
 			LogEntry(
@@ -308,6 +309,15 @@ namespace IncrementalFileCapture
 				)
 			{
 				LogEntry("ERROR!  Failed to get comparison time.  Please select a valid date and time.");
+				return;
+			}
+
+			if(
+				CheckPathRoot(lbSource.Text) == 1
+				|| CheckPathRoot(lbTarget.Text) == 1
+			)
+			{
+				LogEntry("ERROR!  Source and Target cannot be root folders.");
 				return;
 			}
 
@@ -341,12 +351,12 @@ namespace IncrementalFileCapture
 
 			LogEntry(
 				string.Format(
-					@"Comparison time for file checking is: {0}"
+					"Comparison time for file checking is: {0}"
 					, baseDateTime.ToString()
 				)
 			);
 
-			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(@Sanitize(lbSource.Text));
+			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(lbSource.Text));
 			WalkDirectoryTree(root);
 
 			btnGo.Enabled = true;
@@ -412,6 +422,25 @@ namespace IncrementalFileCapture
 						);
 
 						// copy the file to target, including paths
+
+						if (CopyFile(fi.FullName, fi.Name))
+						{
+							LogEntry(
+								string.Format(
+									"Copied file: {0}"
+									, fi.FullName
+								)
+							);
+						}
+						else
+						{
+							LogEntry(
+								string.Format(
+									"ERROR!  Failed to copy file: {0}"
+									, fi.FullName
+								)
+							);
+						}
 
 					} 
 					else
@@ -507,6 +536,56 @@ namespace IncrementalFileCapture
 				cbAMPM.Text = string.Empty;
 			}
 
+		}
+
+		private bool CopyFile (string sourceFullName, string sourceName)
+		{
+			if (sourceName == "IFC.ini") return true;
+
+			string targetFilename = sourceFullName.Replace(
+				lbSource.Text
+				, lbTarget.Text
+			);
+
+			//LogEntry("targetfilename = " + targetFilename);
+
+			try {
+				DirectoryInfo thePath = Directory.CreateDirectory(targetFilename.Replace('\\' + sourceName, ""));
+				File.Copy(
+					sourceFullName
+					, targetFilename
+					, true
+				);
+				return true;
+			}
+			catch (Exception e) {
+				LogEntry(e.Message);
+				return false;
+			}
+		}
+
+		private int CheckPathRoot (string strPath)
+		{
+			DirectoryInfo dirInfo;
+
+			try
+			{
+				dirInfo = new DirectoryInfo(strPath);
+			}
+			catch (Exception e)
+			{
+				LogEntry(e.Message);
+				return -1;
+			}
+
+			if (dirInfo.Name == dirInfo.Root.Name)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 }
