@@ -29,7 +29,7 @@ namespace IncrementalFileCapture
 		{
 			InitializeComponent();
 
-			rtbSource.Text = Sanitize(rtbSource.Text);
+			lbSource.Text = Sanitize(lbSource.Text);
 			rtbTarget.Text = Sanitize(rtbTarget.Text);
 
 			// populate Time hour/min/second dropdowns
@@ -69,9 +69,9 @@ namespace IncrementalFileCapture
 		{
 			var sourceFolder = new FolderBrowserDialog();
 			sourceFolder.ShowDialog();
-			rtbSource.Text = sourceFolder.SelectedPath;
+			lbSource.Text = sourceFolder.SelectedPath;
 
-			if (CheckPathRoot(rtbSource.Text) == 0) ReadIniFile();
+			if (CheckPathRoot(lbSource.Text) == 0) ReadIniFile();
 		}
 
 		private void btnTarget_Click(object sender, EventArgs e)
@@ -144,7 +144,7 @@ namespace IncrementalFileCapture
 
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
-			if (rtbSource.Text == pleaseSelectText)
+			if (lbSource.Text == pleaseSelectText)
 			{
 				LogEntry("ERROR!  Please select a valid source folder.");
 				return;
@@ -184,7 +184,7 @@ namespace IncrementalFileCapture
 
 		private bool WriteIniFile()
 		{
-			string iniPath = Sanitize(rtbSource.Text);
+			string iniPath = Sanitize(lbSource.Text);
 
 			if (Directory.Exists(iniPath))
 			{
@@ -201,7 +201,7 @@ namespace IncrementalFileCapture
 					LogEntry("Writing config file at " + iniFilename);
 				}
 
-				WriteIniFileKeyString(iniFilename, "Paths", "sourceDir", rtbSource.Text);
+				WriteIniFileKeyString(iniFilename, "Paths", "sourceDir", lbSource.Text);
 				WriteIniFileKeyString(iniFilename, "Paths", "targetDir", rtbTarget.Text);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
@@ -259,7 +259,7 @@ namespace IncrementalFileCapture
 
 		private bool ReadIniFile()
 		{
-			string iniPath = Sanitize(rtbSource.Text);
+			string iniPath = Sanitize(lbSource.Text);
 
 			if (Directory.Exists(iniPath))
 			{
@@ -275,7 +275,7 @@ namespace IncrementalFileCapture
 					rtbIgnoreContainingDir.Clear();
 					rtbIgnoreContainingFile.Clear();
 
-					ReadIniFileKeyForLabel(iniFilename, "Paths", "sourceDir", rtbSource);
+					ReadIniFileKeyForLabel(iniFilename, "Paths", "sourceDir", lbSource);
 					ReadIniFileKeyForLabel(iniFilename, "Paths", "targetDir", rtbTarget);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
@@ -347,7 +347,7 @@ namespace IncrementalFileCapture
 		private void btnGo_Click(object sender, EventArgs e)
 		{
 			if (
-				rtbSource.Text == pleaseSelectText
+				lbSource.Text == pleaseSelectText
 				|| rtbTarget.Text == pleaseSelectText
 				)
 			{
@@ -366,7 +366,7 @@ namespace IncrementalFileCapture
 			}
 
 			if(
-				CheckPathRoot(rtbSource.Text) == 1
+				CheckPathRoot(lbSource.Text) == 1
 				|| CheckPathRoot(rtbTarget.Text) == 1
 			)
 			{
@@ -379,7 +379,7 @@ namespace IncrementalFileCapture
 			filesCopied = 0;
 			runErrors = 0;
 
-			LogEntry("---------- Starting ...");
+			LogEntry("Starting ----------");
 
 			// set the comparison time
 
@@ -414,7 +414,7 @@ namespace IncrementalFileCapture
 				)
 			);
 
-			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(rtbSource.Text));
+			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(lbSource.Text));
 			WalkDirectoryTree(root);
 
 			btnGo.Enabled = true;
@@ -521,7 +521,43 @@ namespace IncrementalFileCapture
 								)
 							);
 						}
-					} 
+						else if (result == 2)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file [Dir exclusion match]: {0}"
+									, fi.FullName
+								)
+							);
+						}
+						else if (result == 3)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file [Dir exclusion match - contains]: {0}"
+									, fi.FullName
+								)
+							);
+						}
+						else if (result == 4)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file [File exclusion match]: {0}"
+									, fi.FullName
+								)
+							);
+						}
+						else if (result == 5)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file [File exclusion match - contains]: {0}"
+									, fi.FullName
+								)
+							);
+						}
+					}
 					else
 					{
 						// no
@@ -620,12 +656,83 @@ namespace IncrementalFileCapture
 		private int CopyFile (string sourceFullName, string sourceName)
 		{
 			// return values
-			// -1 = exception; 0 = success; 1 = skipped
+			// -1 = exception; 0 = success; 1 = skipped because IFC.ini match
+			// 2 = skipped because directory exclusion exact match
+			// 3 = skipped because directory exclusion contains match
+			// 4 = skipped because file exclusion exact match
 
 			if (sourceName == "IFC.ini") return 1;
 
+			string[] dirMatchList =
+				sourceFullName.Replace(
+					sourceName
+					, string.Empty
+				).Replace(
+					lbSource.Text
+					, string.Empty
+				).Split(
+					new string[] {@"\"}
+					,StringSplitOptions.RemoveEmptyEntries
+				);
+
+			// check for directory exclusion exact matches
+
+			if (rtbIgnoreMatchingDir.Lines.Count() > 0)
+			{
+				foreach (string i in dirMatchList)
+				{
+					if(rtbIgnoreMatchingDir.Lines.Contains(i))
+					{
+						return 2;
+					}
+				}
+			}
+
+			// check for directory exclusion contains matches
+
+			if (rtbIgnoreContainingDir.Lines.Count() > 0)
+			{
+				foreach (string i in dirMatchList)
+				{
+					foreach (string x in rtbIgnoreContainingDir.Lines)
+					{
+						if (i.Contains(x))
+						{
+							return 3;
+						}
+					}
+				}
+			}
+
+			// check for file exclusion exact matches
+
+			if (rtbIgnoreMatchingFile.Lines.Count() > 0)
+			{
+				foreach (string i in rtbIgnoreMatchingFile.Lines)
+				{
+					if (i == sourceName)
+					{
+						return 4;
+					}
+				}
+			}
+
+			// check for file exclusion contains matches
+
+			if (rtbIgnoreContainingFile.Lines.Count() > 0)
+			{
+				foreach (string i in rtbIgnoreContainingFile.Lines)
+				{
+					if (sourceName.Contains(i))
+					{
+						return 5;
+					}
+				}
+			}
+
+
 			string targetFilename = sourceFullName.Replace(
-				rtbSource.Text
+				lbSource.Text
 				, rtbTarget.Text
 			);
 

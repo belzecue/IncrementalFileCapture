@@ -32,7 +32,7 @@
 			this.btnSource = new System.Windows.Forms.Button();
 			this.btnTarget = new System.Windows.Forms.Button();
 			this.rtbTarget = new System.Windows.Forms.Label();
-			this.rtbSource = new System.Windows.Forms.Label();
+			this.lbSource = new System.Windows.Forms.Label();
 			this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
 			this.cbHour = new System.Windows.Forms.ComboBox();
 			this.cbMinute = new System.Windows.Forms.ComboBox();
@@ -96,16 +96,16 @@
 			// 
 			// rtbSource
 			// 
-			this.rtbSource.AutoEllipsis = true;
-			this.rtbSource.AutoSize = true;
-			this.rtbSource.BackColor = System.Drawing.SystemColors.Info;
-			this.rtbSource.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.rtbSource.Location = new System.Drawing.Point(126, 45);
-			this.rtbSource.MaximumSize = new System.Drawing.Size(370, 44);
-			this.rtbSource.MinimumSize = new System.Drawing.Size(370, 44);
-			this.rtbSource.Name = "rtbSource";
-			this.rtbSource.Size = new System.Drawing.Size(370, 44);
-			this.rtbSource.TabIndex = 4;
+			this.lbSource.AutoEllipsis = true;
+			this.lbSource.AutoSize = true;
+			this.lbSource.BackColor = System.Drawing.SystemColors.Info;
+			this.lbSource.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbSource.Location = new System.Drawing.Point(126, 45);
+			this.lbSource.MaximumSize = new System.Drawing.Size(370, 44);
+			this.lbSource.MinimumSize = new System.Drawing.Size(370, 44);
+			this.lbSource.Name = "rtbSource";
+			this.lbSource.Size = new System.Drawing.Size(370, 44);
+			this.lbSource.TabIndex = 4;
 			// 
 			// dateTimePicker
 			// 
@@ -368,7 +368,7 @@
 			this.Controls.Add(this.cbMinute);
 			this.Controls.Add(this.cbHour);
 			this.Controls.Add(this.dateTimePicker);
-			this.Controls.Add(this.rtbSource);
+			this.Controls.Add(this.lbSource);
 			this.Controls.Add(this.rtbTarget);
 			this.Controls.Add(this.btnTarget);
 			this.Controls.Add(this.btnSource);
@@ -385,7 +385,7 @@
 		private System.Windows.Forms.Button btnSource;
 		private System.Windows.Forms.Button btnTarget;
 		private System.Windows.Forms.Label rtbTarget;
-		private System.Windows.Forms.Label rtbSource;
+		private System.Windows.Forms.Label lbSource;
 		private System.Windows.Forms.DateTimePicker dateTimePicker;
 		private System.Windows.Forms.ComboBox cbHour;
 		private System.Windows.Forms.ComboBox cbMinute;
