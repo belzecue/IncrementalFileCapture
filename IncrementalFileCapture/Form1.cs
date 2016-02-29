@@ -306,10 +306,13 @@ namespace IncrementalFileCapture
 				, key
 			);
 
-			string[] contents = content.Split('|');
+			string[] contents = content.Split(
+				new string[] { "|" }
+				, StringSplitOptions.RemoveEmptyEntries
+			);
 			foreach (string s in contents)
 			{
-				AppendLine(tb, s);
+				if(!string.IsNullOrWhiteSpace(s)) AppendLine(tb, s);
 			}
 
 			LogEntry(
@@ -355,10 +358,10 @@ namespace IncrementalFileCapture
 				return;
 			}
 			if (
-				string.IsNullOrEmpty(cbHour.Text)
-				|| string.IsNullOrEmpty(cbMinute.Text)
-				|| string.IsNullOrEmpty(cbSecond.Text)
-				|| string.IsNullOrEmpty(cbAMPM.Text)
+				string.IsNullOrWhiteSpace(cbHour.Text)
+				|| string.IsNullOrWhiteSpace(cbMinute.Text)
+				|| string.IsNullOrWhiteSpace(cbSecond.Text)
+				|| string.IsNullOrWhiteSpace(cbAMPM.Text)
 				)
 			{
 				LogEntry("ERROR!  Failed to get comparison time.  Please select a valid date and time.");
@@ -660,6 +663,7 @@ namespace IncrementalFileCapture
 			// 2 = skipped because directory exclusion exact match
 			// 3 = skipped because directory exclusion contains match
 			// 4 = skipped because file exclusion exact match
+			// 5 = skipped because file exclusion contains match
 
 			if (sourceName == "IFC.ini") return 1;
 
