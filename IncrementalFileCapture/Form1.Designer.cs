@@ -210,7 +210,7 @@
 			this.rtbIgnoreMatchingDir.Size = new System.Drawing.Size(240, 125);
 			this.rtbIgnoreMatchingDir.TabIndex = 16;
 			this.rtbIgnoreMatchingDir.Text = "";
-			this.rtbIgnoreMatchingDir.Leave += new System.EventHandler(this.tbIgnoreMatchingDir_Leave);
+			this.rtbIgnoreMatchingDir.Leave += new System.EventHandler(this.rtbIgnoreMatchingDir_Leave);
 			// 
 			// lbIgnoreMatchingDir
 			// 
@@ -240,7 +240,7 @@
 			this.rtbIgnoreContainingDir.Size = new System.Drawing.Size(244, 125);
 			this.rtbIgnoreContainingDir.TabIndex = 18;
 			this.rtbIgnoreContainingDir.Text = "";
-			this.rtbIgnoreContainingDir.Leave += new System.EventHandler(this.tbIgnoreContainingDir_Leave);
+			this.rtbIgnoreContainingDir.Leave += new System.EventHandler(this.rtbIgnoreContainingDir_Leave);
 			// 
 			// btnGo
 			// 
@@ -271,7 +271,7 @@
 			this.rtbIgnoreContainingFile.Size = new System.Drawing.Size(244, 125);
 			this.rtbIgnoreContainingFile.TabIndex = 23;
 			this.rtbIgnoreContainingFile.Text = "";
-			this.rtbIgnoreContainingFile.Leave += new System.EventHandler(this.tbIgnoreContainingFile_Leave);
+			this.rtbIgnoreContainingFile.Leave += new System.EventHandler(this.rtbIgnoreContainingFile_Leave);
 			// 
 			// lbIgnoreMatchingFile
 			// 
@@ -291,7 +291,7 @@
 			this.rtbIgnoreMatchingFile.Size = new System.Drawing.Size(240, 125);
 			this.rtbIgnoreMatchingFile.TabIndex = 21;
 			this.rtbIgnoreMatchingFile.Text = "";
-			this.rtbIgnoreMatchingFile.Leave += new System.EventHandler(this.tbIgnoreMatchingFile_Leave);
+			this.rtbIgnoreMatchingFile.Leave += new System.EventHandler(this.rtbIgnoreMatchingFile_Leave);
 			// 
 			// btnSaveConfig
 			// 

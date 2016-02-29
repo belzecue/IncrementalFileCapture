@@ -81,27 +81,27 @@ namespace IncrementalFileCapture
 			rtbTarget.Text = targetFolder.SelectedPath;
 		}
 
-		private void tbIgnoreMatchingDir_Leave(object sender, EventArgs e)
+		private void rtbIgnoreMatchingDir_Leave(object sender, EventArgs e)
 		{
 			rtbIgnoreMatchingDir.Lines = StripBlankLines(rtbIgnoreMatchingDir.Lines);
 			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(rtbIgnoreMatchingDir, lbIgnoreMatchingDir);
 
 		}
 
-		private void tbIgnoreMatchingFile_Leave(object sender, EventArgs e)
+		private void rtbIgnoreMatchingFile_Leave(object sender, EventArgs e)
 		{
 			rtbIgnoreMatchingFile.Lines = StripBlankLines(rtbIgnoreMatchingFile.Lines);
 			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(rtbIgnoreMatchingFile, lbIgnoreMatchingFile);
 		}
 
-		private void tbIgnoreContainingDir_Leave(object sender, EventArgs e)
+		private void rtbIgnoreContainingDir_Leave(object sender, EventArgs e)
 		{
 			rtbIgnoreContainingDir.Lines = StripBlankLines(rtbIgnoreContainingDir.Lines);
 			lbIgnoreContainingDir.Text = UpdateListBoxLabel(rtbIgnoreContainingDir, lbIgnoreContainingDir);
 
 		}
 
-		private void tbIgnoreContainingFile_Leave(object sender, EventArgs e)
+		private void rtbIgnoreContainingFile_Leave(object sender, EventArgs e)
 		{
 			rtbIgnoreContainingFile.Lines = StripBlankLines(rtbIgnoreContainingFile.Lines);
 			lbIgnoreContainingFile.Text = UpdateListBoxLabel(rtbIgnoreContainingFile, lbIgnoreContainingFile);
@@ -281,6 +281,7 @@ namespace IncrementalFileCapture
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingFile", rtbIgnoreContainingFile);
+
 					return true;
 				}
 				else
@@ -297,7 +298,7 @@ namespace IncrementalFileCapture
 		}
 
 
-		private void ReadIniFileKeyForRTB(string iniFilename, string section, string key, RichTextBox tb)
+		private void ReadIniFileKeyForRTB(string iniFilename, string section, string key, RichTextBox rtb)
 		{
 			IniFile ini = new IniFile(iniFilename);
 
@@ -312,8 +313,27 @@ namespace IncrementalFileCapture
 			);
 			foreach (string s in contents)
 			{
-				if(!string.IsNullOrWhiteSpace(s)) AppendLine(tb, s);
+				if(!string.IsNullOrWhiteSpace(s)) AppendLine(rtb, s);
 			}
+
+
+			if (rtb.Name == "rtbIgnoreMatchingDir")
+			{
+				rtbIgnoreMatchingDir_Leave(rtbIgnoreMatchingDir, EventArgs.Empty);
+			}
+			else if (rtb.Name == "rtbIgnoreMatchingFile")
+			{
+				rtbIgnoreMatchingFile_Leave(rtbIgnoreMatchingFile, EventArgs.Empty);
+			}
+			else if (rtb.Name == "rtbIgnoreContainingDir")
+			{
+				rtbIgnoreContainingDir_Leave(rtbIgnoreContainingDir, EventArgs.Empty);
+			}
+			else if (rtb.Name == "rtbIgnoreContainingFile")
+			{
+				rtbIgnoreContainingFile_Leave(rtbIgnoreContainingFile, EventArgs.Empty);
+			}
+
 
 			LogEntry(
 				String.Format(
