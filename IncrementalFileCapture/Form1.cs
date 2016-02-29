@@ -119,31 +119,57 @@ namespace IncrementalFileCapture
 
 		private string UpdateListBoxLabel (RichTextBox listBox, Label label)
 		{
-			return label.Text.Split(':')[0]
-				+ ": "
-				+ listBox.Lines.Count();
+			return String.Format(
+				"{0}: {1}"
+				, label.Text.Split(':')[0] 
+				, listBox.Lines.Count()
+			);
 		}
 
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
+			if (lbSource.Text == awaitingInputText)
+			{
+				LogEntry("ERROR!  Please select a valid source folder.");
+				return;
+			}
 			WriteIniFile();
 		}
 
 		private void LogEntry (string str)
 		{
-			AppendLine(
-				tbLog, 
-				DateTime.Now + " : "
-					+ str
-			);
+			Color textOrig = tbLog.SelectionColor;
+
+			if (str.StartsWith("ERROR!"))
+			{
+				tbLog.SelectionColor = Color.Red;
+				tbLog.SelectedRtf = String.Format(
+					@"{0}\rtf1\ansi {1} \line{2}"
+					, '{'
+					, string.Format(
+						@"{0} {1}"
+						, DateTime.Now
+						, str
+						)
+					, '}'
+				);
+				tbLog.SelectionColor = textOrig;
+			}
+			else
+			{
+				AppendLine(
+					tbLog,
+					DateTime.Now + str
+				);
+			}
 		}
 
 		private void AppendLine(RichTextBox source, string str)
 		{
-			if (source.Text.Length == 0)
-				source.Text = str;
-			else
-				source.AppendText(System.Environment.NewLine + str);
+			//if (source.Text.Length == 0)
+			//	source.Text = str;
+			//else
+			source.AppendText(str + System.Environment.NewLine);
 		}
 
 		private bool WriteIniFile()
@@ -189,7 +215,13 @@ namespace IncrementalFileCapture
 				, string.Join("|", tb.Lines)
 			);
 
-			LogEntry("Wrote config key value: " + iniFilename + ": " + section + ", " + key);
+			LogEntry(
+				String.Format(
+					"Wrote config key value: {0}, {1}"
+					, section
+					, key
+				)
+			);
 		}
 
 		private bool ReadIniFile()
@@ -245,7 +277,13 @@ namespace IncrementalFileCapture
 				tb.AppendText(s + System.Environment.NewLine);
 			}
 
-			LogEntry("Read config key value: " + section + ", " + key);
+			LogEntry(
+				String.Format(
+					"Read config key value: {0}, {1}"
+					,section
+					,key
+				)
+			);
 		}
 
 		private void btnGo_Click(object sender, EventArgs e)
@@ -352,16 +390,27 @@ namespace IncrementalFileCapture
 					// where the file has been deleted since the call to TraverseTree().
 
 
-					if (fi.LastWriteTime.AddTicks(-(fi.LastWriteTime.Ticks % TimeSpan.TicksPerSecond)) > baseDateTime)
+					if (fi.LastWriteTime.AddTicks(-(fi.LastWriteTime.Ticks % TimeSpan.TicksPerSecond)) > baseDateTime) // discard milliseconds in LastWriteTime
 					{
-						LogEntry("Collecting file: " + fi.FullName + " " + fi.LastWriteTime);
+						LogEntry(
+							String.Format(
+								"Collecting file: {0} {1}"
+								,fi.FullName
+								,fi.LastWriteTime
+							)
+						);
 					} 
 					else
 					{
-						LogEntry("Ignoring file: " + fi.FullName + " " + fi.LastWriteTime);
+						LogEntry(
+							String.Format(
+								"Ignoring file: {0} {1}"
+								, fi.FullName
+								, fi.LastWriteTime
+							)
+						);
 
 					}
-
 				}
 
 				// Now find all the subdirectories under this directory.
