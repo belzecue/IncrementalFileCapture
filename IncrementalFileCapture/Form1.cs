@@ -20,10 +20,14 @@ namespace IncrementalFileCapture
 		enum seconds : int { max = 59, min = 0 }
 
 		private DateTime baseDateTime;
+		private string awaitingInputText = "Please select...";
 
 		public Form1()
 		{
 			InitializeComponent();
+
+			lbSource.Text = Sanitize(lbSource.Text);
+			lbTarget.Text = Sanitize(lbTarget.Text);
 
 			// populate Time hour/min/second dropdowns
 
@@ -52,10 +56,6 @@ namespace IncrementalFileCapture
 
 			cbAMPM.Items.Add("AM");
 			cbAMPM.Items.Add("PM");
-
-
-
-
 		}
 
 		private void btnSource_Click(object sender, EventArgs e)
@@ -67,16 +67,11 @@ namespace IncrementalFileCapture
 			ReadIniFile();
 		}
 
-		private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-		{
-
-		}
-
 		private void btnTarget_Click(object sender, EventArgs e)
 		{
 			var targetFolder = new FolderBrowserDialog();
 			targetFolder.ShowDialog();
-			lbSource.Text = targetFolder.SelectedPath;
+			lbTarget.Text = targetFolder.SelectedPath;
 		}
 
 		private void tbIgnoreMatchingDir_Leave(object sender, EventArgs e)
@@ -131,10 +126,7 @@ namespace IncrementalFileCapture
 
 		private void btnSaveConfig_Click(object sender, EventArgs e)
 		{
-			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
-			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
-			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
-			WriteIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
+			WriteIniFile();
 		}
 
 		private void LogEntry (string str)
@@ -154,43 +146,9 @@ namespace IncrementalFileCapture
 				source.AppendText(System.Environment.NewLine + str);
 		}
 
-		private bool WriteIniFileKey(string iniPath, string section, string key, RichTextBox tb)
+		private bool WriteIniFile()
 		{
-			if (Directory.Exists(iniPath))
-			{
-				string iniFilename = @iniPath + @"\IFC.ini";
-				IniFile ini = new IniFile(iniFilename);
-				ini.IniWriteValue(
-					section
-					, key
-					, string.Join("|", tb.Lines)
-				);
-				LogEntry("Wrote to config file: " + iniFilename + ", " + section + ", " + key);
-				return true;
-			}
-			else
-			{
-				LogEntry("Failed to write config file, invalid path: " + iniPath);
-				return false;
-			}
-		}
-
-		private void ReadIniFile()
-		{
-			tbIgnoreMatchingDir.Clear();
-			tbIgnoreMatchingFile.Clear();
-			tbIgnoreContainingDir.Clear();
-			tbIgnoreContainingFile.Clear();
-
-			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
-			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
-			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
-			ReadIniFileKey(lbSource.Text, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
-		}
-
-
-		private bool ReadIniFileKey(string iniPath, string section, string key, RichTextBox tb)
-		{
+			string iniPath = Sanitize(lbSource.Text);
 
 			if (Directory.Exists(iniPath))
 			{
@@ -199,28 +157,70 @@ namespace IncrementalFileCapture
 
 				if (iniFileExists)
 				{
-					IniFile ini = new IniFile(iniFilename);
+					LogEntry("Overwriting config file at " + iniFilename);
 
-					string content = ini.IniReadValue(
-						section
-						, key
-					);
+				}
+				else
+				{
+					LogEntry("Writing config file at " + iniFilename);
+				}
 
-					string[] contents = content.Split('|');
-					foreach (string s in contents)
-					{
-						tb.AppendText(s + System.Environment.NewLine);
-					}
+				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
+				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
+				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
+				WriteIniFileKey(iniFilename, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
 
-					LogEntry("Read config file: " + iniFilename + ", " + section + ", " + key);
+				return true;
+			}
+			else
+			{
+				LogEntry("ERROR!  Failed to write ini file, invalid path: " + iniPath);
+				return false;
+			}
+		}
+
+		private void WriteIniFileKey(string iniFilename, string section, string key, RichTextBox tb)
+		{
+			IniFile ini = new IniFile(iniFilename);
+
+			ini.IniWriteValue(
+				section
+				, key
+				, string.Join("|", tb.Lines)
+			);
+
+			LogEntry("Wrote config key value: " + iniFilename + ": " + section + ", " + key);
+		}
+
+		private bool ReadIniFile()
+		{
+			string iniPath = Sanitize(lbSource.Text);
+
+			if (Directory.Exists(iniPath))
+			{
+				string iniFilename = @iniPath + @"\IFC.ini";
+				bool iniFileExists = File.Exists(iniFilename);
+
+				if (iniFileExists)
+				{
+					LogEntry("Found config file at " + iniFilename);
+
+					tbIgnoreMatchingDir.Clear();
+					tbIgnoreMatchingFile.Clear();
+					tbIgnoreContainingDir.Clear();
+					tbIgnoreContainingFile.Clear();
+
+					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingDir", tbIgnoreMatchingDir);
+					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreMatchingFile", tbIgnoreMatchingFile);
+					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreContainingDir", tbIgnoreContainingDir);
+					ReadIniFileKey(iniFilename, "Exclusions", "IgnoreContainingFile", tbIgnoreContainingFile);
 					return true;
 				}
 				else
 				{
-					LogEntry("No config file found at: " + iniFilename);
+					LogEntry("ERROR! No config file found at: " + iniFilename);
 					return false;
 				}
-
 			}
 			else
 			{
@@ -229,8 +229,35 @@ namespace IncrementalFileCapture
 			}
 		}
 
+
+		private void ReadIniFileKey(string iniFilename, string section, string key, RichTextBox tb)
+		{
+			IniFile ini = new IniFile(iniFilename);
+
+			string content = ini.IniReadValue(
+				section
+				, key
+			);
+
+			string[] contents = content.Split('|');
+			foreach (string s in contents)
+			{
+				tb.AppendText(s + System.Environment.NewLine);
+			}
+
+			LogEntry("Read config key value: " + section + ", " + key);
+		}
+
 		private void btnGo_Click(object sender, EventArgs e)
 		{
+			if (
+				lbSource.Text == awaitingInputText
+				|| lbTarget.Text == awaitingInputText
+				)
+			{
+				LogEntry("ERROR!  Please select valid source and target folders.");
+				return;
+			}
 			if (
 				string.IsNullOrEmpty(cbHour.Text)
 				|| string.IsNullOrEmpty(cbMinute.Text)
@@ -238,9 +265,11 @@ namespace IncrementalFileCapture
 				|| string.IsNullOrEmpty(cbAMPM.Text)
 				)
 			{
-				LogEntry("Failed to get base time.  Please select a valid date and time.");
+				LogEntry("ERROR!  Failed to get comparison time.  Please select a valid date and time.");
 				return;
 			}
+
+			btnGo.Enabled = false;
 
 			// set the comparison time
 
@@ -268,12 +297,25 @@ namespace IncrementalFileCapture
 				Convert.ToDouble(cbSecond.Text)
 			);
 
-			LogEntry("Base time for file checking is: " + baseDateTime.ToString());
+			LogEntry("Comparison time for file checking is: " + baseDateTime.ToString());
 
-			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(@lbSource.Text);
+			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(@Sanitize(lbSource.Text));
 			WalkDirectoryTree(root);
+
+			btnGo.Enabled = true;
 		}
 
+		private string Sanitize (string inStr)
+		{
+			if (string.IsNullOrWhiteSpace(inStr))
+			{
+				return awaitingInputText;
+			}
+			else
+			{
+				return inStr;
+			}
+		}
 
 		private void WalkDirectoryTree(System.IO.DirectoryInfo root)
 		{
