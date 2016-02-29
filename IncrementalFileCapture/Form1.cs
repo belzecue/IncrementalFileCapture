@@ -420,9 +420,13 @@ namespace IncrementalFileCapture
 			btnGo.Enabled = true;
 
 			LogEntry("INFO* Files copied: " + filesCopied);
+			LogEntry("Error count: " + runErrors);
 			LogEntry("---------- Finished.");
+
+			rtbLog.SelectionStart = rtbLog.Text.Length;
+			rtbLog.ScrollToCaret();
+
 			UpdateLogLabel(rtbLog, lbLog);
-			LogEntry("runerrors: " + runErrors);
 		}
 
 		private string Sanitize (string inStr)
@@ -490,12 +494,12 @@ namespace IncrementalFileCapture
 
 						if ( result == 0)
 						{
-							LogEntry(
-								string.Format(
-									"Copied file: {0}"
-									, fi.FullName
-								)
-							);
+							//LogEntry(
+							//	string.Format(
+							//		"Copied file: {0}"
+							//		, fi.FullName
+							//	)
+							//);
 							filesCopied++;
 						}
 						else if (result == -1)
@@ -630,7 +634,7 @@ namespace IncrementalFileCapture
 				File.Copy(
 					sourceFullName
 					, targetFilename
-					, false
+					, true
 				);
 				return 0;
 			}
