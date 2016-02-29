@@ -122,6 +122,7 @@
 			this.cbHour.Name = "cbHour";
 			this.cbHour.Size = new System.Drawing.Size(55, 33);
 			this.cbHour.TabIndex = 6;
+			this.cbHour.Leave += new System.EventHandler(this.cbHour_Leave);
 			// 
 			// cbMinute
 			// 
@@ -131,6 +132,7 @@
 			this.cbMinute.Name = "cbMinute";
 			this.cbMinute.Size = new System.Drawing.Size(55, 33);
 			this.cbMinute.TabIndex = 7;
+			this.cbMinute.Leave += new System.EventHandler(this.cbMinute_Leave);
 			// 
 			// cbSecond
 			// 
@@ -140,6 +142,7 @@
 			this.cbSecond.Name = "cbSecond";
 			this.cbSecond.Size = new System.Drawing.Size(55, 33);
 			this.cbSecond.TabIndex = 8;
+			this.cbSecond.Leave += new System.EventHandler(this.cbSecond_Leave);
 			// 
 			// cbAMPM
 			// 
@@ -149,6 +152,7 @@
 			this.cbAMPM.Name = "cbAMPM";
 			this.cbAMPM.Size = new System.Drawing.Size(55, 33);
 			this.cbAMPM.TabIndex = 9;
+			this.cbAMPM.Leave += new System.EventHandler(this.cbAMPM_Leave);
 			// 
 			// label2
 			// 

@@ -158,8 +158,12 @@ namespace IncrementalFileCapture
 			else
 			{
 				AppendLine(
-					tbLog,
-					DateTime.Now + str
+					tbLog
+					, string.Format(
+						@"{0} {1}"
+						, DateTime.Now
+						, str
+						)
 				);
 			}
 		}
@@ -335,7 +339,12 @@ namespace IncrementalFileCapture
 				Convert.ToDouble(cbSecond.Text)
 			);
 
-			LogEntry("Comparison time for file checking is: " + baseDateTime.ToString());
+			LogEntry(
+				string.Format(
+					@"Comparison time for file checking is: {0}"
+					, baseDateTime.ToString()
+				)
+			);
 
 			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(@Sanitize(lbSource.Text));
 			WalkDirectoryTree(root);
@@ -391,20 +400,26 @@ namespace IncrementalFileCapture
 
 
 					if (fi.LastWriteTime.AddTicks(-(fi.LastWriteTime.Ticks % TimeSpan.TicksPerSecond)) > baseDateTime) // discard milliseconds in LastWriteTime
+					// check if file older than compare datetime
 					{
+						// yes
 						LogEntry(
 							String.Format(
-								"Collecting file: {0} {1}"
+								"Collecting file: {0} [{1}]"
 								,fi.FullName
 								,fi.LastWriteTime
 							)
 						);
+
+						// copy the file to target, including paths
+
 					} 
 					else
 					{
+						// no
 						LogEntry(
 							String.Format(
-								"Ignoring file: {0} {1}"
+								"Ignoring file: {0} [{1}]"
 								, fi.FullName
 								, fi.LastWriteTime
 							)
@@ -424,5 +439,74 @@ namespace IncrementalFileCapture
 			}
 		}
 
+		private void cbHour_Leave(object sender, EventArgs e)
+		{
+			if (
+				!ValidateNumberEntry(
+					cbHour.Text
+					, (int)hours.min
+					, (int)hours.max
+				)
+			)
+			{
+				cbHour.Text = string.Empty;
+			}
+		}
+
+		private bool ValidateNumberEntry(string value, int min, int max)
+		{
+			int valueNum;
+			try
+			{
+				valueNum = Convert.ToInt16(value);
+				return (valueNum <= max && valueNum >= min) ? true : false;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+			
+
+		private void cbMinute_Leave(object sender, EventArgs e)
+		{
+			if (
+				!ValidateNumberEntry(
+					cbMinute.Text
+					, (int)minutes.min
+					, (int)minutes.max
+				)
+			)
+			{
+				cbMinute.Text = string.Empty;
+			}
+		}
+
+		private void cbSecond_Leave(object sender, EventArgs e)
+		{
+			if (
+				!ValidateNumberEntry(
+					cbSecond.Text
+					, (int)seconds.min
+					, (int)seconds.max
+				)
+			)
+			{
+				cbSecond.Text = string.Empty;
+			}
+		}
+
+		private void cbAMPM_Leave(object sender, EventArgs e)
+		{
+			if (
+				cbAMPM.Text != "AM"
+				&& cbAMPM.Text != "PM"
+			)
+			{
+				cbAMPM.Text = string.Empty;
+			}
+
+		}
 	}
 }
