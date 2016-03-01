@@ -54,6 +54,8 @@
 			this.rtbIgnoreMatchingFile = new System.Windows.Forms.RichTextBox();
 			this.btnSaveConfig = new System.Windows.Forms.Button();
 			this.label8 = new System.Windows.Forms.Label();
+			this.lbIgnoreEndingFile = new System.Windows.Forms.Label();
+			this.rtbIgnoreEndingFile = new System.Windows.Forms.RichTextBox();
 			this.SuspendLayout();
 			// 
 			// btnSource
@@ -210,7 +212,7 @@
 			this.rtbIgnoreMatchingDir.Size = new System.Drawing.Size(240, 125);
 			this.rtbIgnoreMatchingDir.TabIndex = 16;
 			this.rtbIgnoreMatchingDir.Text = "";
-			this.rtbIgnoreMatchingDir.Leave += new System.EventHandler(this.rtbIgnoreMatchingDir_Leave);
+			this.rtbIgnoreMatchingDir.Leave += new System.EventHandler(this.rtbExclusion_Leave);
 			// 
 			// lbIgnoreMatchingDir
 			// 
@@ -226,7 +228,7 @@
 			// 
 			this.lbIgnoreContainingDir.AutoSize = true;
 			this.lbIgnoreContainingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lbIgnoreContainingDir.Location = new System.Drawing.Point(752, 335);
+			this.lbIgnoreContainingDir.Location = new System.Drawing.Point(513, 501);
 			this.lbIgnoreContainingDir.Name = "lbIgnoreContainingDir";
 			this.lbIgnoreContainingDir.Size = new System.Drawing.Size(217, 20);
 			this.lbIgnoreContainingDir.TabIndex = 19;
@@ -235,12 +237,12 @@
 			// rtbIgnoreContainingDir
 			// 
 			this.rtbIgnoreContainingDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.rtbIgnoreContainingDir.Location = new System.Drawing.Point(751, 358);
+			this.rtbIgnoreContainingDir.Location = new System.Drawing.Point(512, 524);
 			this.rtbIgnoreContainingDir.Name = "rtbIgnoreContainingDir";
 			this.rtbIgnoreContainingDir.Size = new System.Drawing.Size(244, 125);
 			this.rtbIgnoreContainingDir.TabIndex = 18;
 			this.rtbIgnoreContainingDir.Text = "";
-			this.rtbIgnoreContainingDir.Leave += new System.EventHandler(this.rtbIgnoreContainingDir_Leave);
+			this.rtbIgnoreContainingDir.Leave += new System.EventHandler(this.rtbExclusion_Leave);
 			// 
 			// btnGo
 			// 
@@ -271,13 +273,13 @@
 			this.rtbIgnoreContainingFile.Size = new System.Drawing.Size(244, 125);
 			this.rtbIgnoreContainingFile.TabIndex = 23;
 			this.rtbIgnoreContainingFile.Text = "";
-			this.rtbIgnoreContainingFile.Leave += new System.EventHandler(this.rtbIgnoreContainingFile_Leave);
+			this.rtbIgnoreContainingFile.Leave += new System.EventHandler(this.rtbExclusion_Leave);
 			// 
 			// lbIgnoreMatchingFile
 			// 
 			this.lbIgnoreMatchingFile.AutoSize = true;
 			this.lbIgnoreMatchingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lbIgnoreMatchingFile.Location = new System.Drawing.Point(512, 501);
+			this.lbIgnoreMatchingFile.Location = new System.Drawing.Point(751, 335);
 			this.lbIgnoreMatchingFile.Name = "lbIgnoreMatchingFile";
 			this.lbIgnoreMatchingFile.Size = new System.Drawing.Size(211, 20);
 			this.lbIgnoreMatchingFile.TabIndex = 22;
@@ -286,12 +288,12 @@
 			// rtbIgnoreMatchingFile
 			// 
 			this.rtbIgnoreMatchingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.rtbIgnoreMatchingFile.Location = new System.Drawing.Point(512, 524);
+			this.rtbIgnoreMatchingFile.Location = new System.Drawing.Point(751, 358);
 			this.rtbIgnoreMatchingFile.Name = "rtbIgnoreMatchingFile";
 			this.rtbIgnoreMatchingFile.Size = new System.Drawing.Size(240, 125);
 			this.rtbIgnoreMatchingFile.TabIndex = 21;
 			this.rtbIgnoreMatchingFile.Text = "";
-			this.rtbIgnoreMatchingFile.Leave += new System.EventHandler(this.rtbIgnoreMatchingFile_Leave);
+			this.rtbIgnoreMatchingFile.Leave += new System.EventHandler(this.rtbExclusion_Leave);
 			// 
 			// btnSaveConfig
 			// 
@@ -315,11 +317,33 @@
 			this.label8.Text = "Saves an ini file in Source folder to be\r\nused in future when that folder is sele" +
     "cted.";
 			// 
+			// lbIgnoreEndingFile
+			// 
+			this.lbIgnoreEndingFile.AutoSize = true;
+			this.lbIgnoreEndingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbIgnoreEndingFile.Location = new System.Drawing.Point(751, 169);
+			this.lbIgnoreEndingFile.Name = "lbIgnoreEndingFile";
+			this.lbIgnoreEndingFile.Size = new System.Drawing.Size(214, 20);
+			this.lbIgnoreEndingFile.TabIndex = 28;
+			this.lbIgnoreEndingFile.Text = "Ignore File Names Ending In:";
+			// 
+			// rtbIgnoreEndingFile
+			// 
+			this.rtbIgnoreEndingFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.rtbIgnoreEndingFile.Location = new System.Drawing.Point(751, 192);
+			this.rtbIgnoreEndingFile.Name = "rtbIgnoreEndingFile";
+			this.rtbIgnoreEndingFile.Size = new System.Drawing.Size(240, 125);
+			this.rtbIgnoreEndingFile.TabIndex = 27;
+			this.rtbIgnoreEndingFile.Text = "";
+			this.rtbIgnoreEndingFile.Leave += new System.EventHandler(this.rtbExclusion_Leave);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1008, 661);
+			this.Controls.Add(this.lbIgnoreEndingFile);
+			this.Controls.Add(this.rtbIgnoreEndingFile);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.btnSaveConfig);
 			this.Controls.Add(this.lbIgnoreContainingFile);
@@ -380,6 +404,8 @@
 		private System.Windows.Forms.RichTextBox rtbIgnoreMatchingFile;
 		private System.Windows.Forms.Button btnSaveConfig;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.Label lbIgnoreEndingFile;
+		private System.Windows.Forms.RichTextBox rtbIgnoreEndingFile;
 	}
 }
 

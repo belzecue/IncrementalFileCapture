@@ -81,30 +81,13 @@ namespace IncrementalFileCapture
 			rtbTarget.Text = targetFolder.SelectedPath;
 		}
 
-		private void rtbIgnoreMatchingDir_Leave(object sender, EventArgs e)
+		private void rtbExclusion_Leave(object sender, EventArgs e)
 		{
-			rtbIgnoreMatchingDir.Lines = StripBlankLines(rtbIgnoreMatchingDir.Lines);
-			lbIgnoreMatchingDir.Text = UpdateListBoxLabel(rtbIgnoreMatchingDir, lbIgnoreMatchingDir);
+			RichTextBox rtb = sender as RichTextBox;
+			rtb.Lines = StripBlankLines(rtb.Lines);
 
-		}
-
-		private void rtbIgnoreMatchingFile_Leave(object sender, EventArgs e)
-		{
-			rtbIgnoreMatchingFile.Lines = StripBlankLines(rtbIgnoreMatchingFile.Lines);
-			lbIgnoreMatchingFile.Text = UpdateListBoxLabel(rtbIgnoreMatchingFile, lbIgnoreMatchingFile);
-		}
-
-		private void rtbIgnoreContainingDir_Leave(object sender, EventArgs e)
-		{
-			rtbIgnoreContainingDir.Lines = StripBlankLines(rtbIgnoreContainingDir.Lines);
-			lbIgnoreContainingDir.Text = UpdateListBoxLabel(rtbIgnoreContainingDir, lbIgnoreContainingDir);
-
-		}
-
-		private void rtbIgnoreContainingFile_Leave(object sender, EventArgs e)
-		{
-			rtbIgnoreContainingFile.Lines = StripBlankLines(rtbIgnoreContainingFile.Lines);
-			lbIgnoreContainingFile.Text = UpdateListBoxLabel(rtbIgnoreContainingFile, lbIgnoreContainingFile);
+			Label label = this.Controls.Find(rtb.Name.Replace("rtb", "lb"), false)[0] as Label;
+			label.Text = UpdateListBoxLabel(rtb, label);
 		}
 
 		private string[] StripBlankLines (string[] strList)
@@ -150,6 +133,10 @@ namespace IncrementalFileCapture
 				return;
 			}
 			WriteIniFile();
+
+			rtbLog.SelectionStart = rtbLog.Text.Length;
+			rtbLog.ScrollToCaret();
+
 		}
 
 		private void LogEntry (string str)
@@ -208,6 +195,7 @@ namespace IncrementalFileCapture
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingFile", rtbIgnoreContainingFile);
+				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreEndingFile", rtbIgnoreEndingFile);
 
 				return true;
 			}
@@ -274,6 +262,7 @@ namespace IncrementalFileCapture
 					rtbIgnoreMatchingFile.Clear();
 					rtbIgnoreContainingDir.Clear();
 					rtbIgnoreContainingFile.Clear();
+					rtbIgnoreEndingFile.Clear();
 
 					ReadIniFileKeyForLabel(iniFilename, "Paths", "sourceDir", lbSource);
 					ReadIniFileKeyForLabel(iniFilename, "Paths", "targetDir", rtbTarget);
@@ -281,6 +270,7 @@ namespace IncrementalFileCapture
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingFile", rtbIgnoreContainingFile);
+					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreEndingFile", rtbIgnoreEndingFile);
 
 					return true;
 				}
@@ -316,24 +306,7 @@ namespace IncrementalFileCapture
 				if(!string.IsNullOrWhiteSpace(s)) AppendLine(rtb, s);
 			}
 
-
-			if (rtb.Name == "rtbIgnoreMatchingDir")
-			{
-				rtbIgnoreMatchingDir_Leave(rtbIgnoreMatchingDir, EventArgs.Empty);
-			}
-			else if (rtb.Name == "rtbIgnoreMatchingFile")
-			{
-				rtbIgnoreMatchingFile_Leave(rtbIgnoreMatchingFile, EventArgs.Empty);
-			}
-			else if (rtb.Name == "rtbIgnoreContainingDir")
-			{
-				rtbIgnoreContainingDir_Leave(rtbIgnoreContainingDir, EventArgs.Empty);
-			}
-			else if (rtb.Name == "rtbIgnoreContainingFile")
-			{
-				rtbIgnoreContainingFile_Leave(rtbIgnoreContainingFile, EventArgs.Empty);
-			}
-
+			rtbExclusion_Leave(rtb, EventArgs.Empty);
 
 			LogEntry(
 				String.Format(
@@ -580,6 +553,15 @@ namespace IncrementalFileCapture
 								)
 							);
 						}
+						else if (result == 6)
+						{
+							LogEntry(
+								string.Format(
+									"Skipped copying file [File exclusion match - ending]: {0}"
+									, fi.FullName
+								)
+							);
+						}
 					}
 					else
 					{
@@ -684,6 +666,7 @@ namespace IncrementalFileCapture
 			// 3 = skipped because directory exclusion contains match
 			// 4 = skipped because file exclusion exact match
 			// 5 = skipped because file exclusion contains match
+			// 6 = skipped because file exclusion ending match
 
 			if (sourceName == "IFC.ini") return 1;
 
@@ -754,6 +737,18 @@ namespace IncrementalFileCapture
 				}
 			}
 
+			// check for file exclusion ending matches
+
+			if (rtbIgnoreEndingFile.Lines.Count() > 0)
+			{
+				foreach (string i in rtbIgnoreEndingFile.Lines)
+				{
+					if (sourceName.EndsWith(i))
+					{
+						return 6;
+					}
+				}
+			}
 
 			string targetFilename = sourceFullName.Replace(
 				lbSource.Text
