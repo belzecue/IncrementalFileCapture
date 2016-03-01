@@ -28,10 +28,11 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.btnSource = new System.Windows.Forms.Button();
 			this.btnTarget = new System.Windows.Forms.Button();
-			this.rtbTarget = new System.Windows.Forms.Label();
+			this.lbTarget = new System.Windows.Forms.Label();
 			this.lbSource = new System.Windows.Forms.Label();
 			this.dateTimePicker = new System.Windows.Forms.DateTimePicker();
 			this.cbHour = new System.Windows.Forms.ComboBox();
@@ -56,6 +57,9 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.lbIgnoreEndingFile = new System.Windows.Forms.Label();
 			this.rtbIgnoreEndingFile = new System.Windows.Forms.RichTextBox();
+			this.btnScanForNewest = new System.Windows.Forms.Button();
+			this.lbScanForNewest = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// btnSource
@@ -82,16 +86,16 @@
 			// 
 			// rtbTarget
 			// 
-			this.rtbTarget.AutoEllipsis = true;
-			this.rtbTarget.AutoSize = true;
-			this.rtbTarget.BackColor = System.Drawing.SystemColors.Info;
-			this.rtbTarget.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.rtbTarget.Location = new System.Drawing.Point(126, 83);
-			this.rtbTarget.MaximumSize = new System.Drawing.Size(370, 44);
-			this.rtbTarget.MinimumSize = new System.Drawing.Size(370, 44);
-			this.rtbTarget.Name = "rtbTarget";
-			this.rtbTarget.Size = new System.Drawing.Size(370, 44);
-			this.rtbTarget.TabIndex = 3;
+			this.lbTarget.AutoEllipsis = true;
+			this.lbTarget.AutoSize = true;
+			this.lbTarget.BackColor = System.Drawing.SystemColors.Info;
+			this.lbTarget.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbTarget.Location = new System.Drawing.Point(126, 83);
+			this.lbTarget.MaximumSize = new System.Drawing.Size(370, 44);
+			this.lbTarget.MinimumSize = new System.Drawing.Size(370, 44);
+			this.lbTarget.Name = "rtbTarget";
+			this.lbTarget.Size = new System.Drawing.Size(370, 44);
+			this.lbTarget.TabIndex = 3;
 			// 
 			// lbSource
 			// 
@@ -337,11 +341,37 @@
 			this.rtbIgnoreEndingFile.Text = "";
 			this.rtbIgnoreEndingFile.Leave += new System.EventHandler(this.rtbExclusion_Leave);
 			// 
+			// btnScanForNewest
+			// 
+			this.btnScanForNewest.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnScanForNewest.Location = new System.Drawing.Point(517, 9);
+			this.btnScanForNewest.Name = "btnScanForNewest";
+			this.btnScanForNewest.Size = new System.Drawing.Size(95, 44);
+			this.btnScanForNewest.TabIndex = 29;
+			this.btnScanForNewest.Text = "Scan For Newest";
+			this.btnScanForNewest.UseVisualStyleBackColor = true;
+			this.btnScanForNewest.Click += new System.EventHandler(this.btnScanForNewest_Click);
+			// 
+			// lbScanForNewest
+			// 
+			this.lbScanForNewest.AutoEllipsis = true;
+			this.lbScanForNewest.AutoSize = true;
+			this.lbScanForNewest.BackColor = System.Drawing.SystemColors.Info;
+			this.lbScanForNewest.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbScanForNewest.Location = new System.Drawing.Point(621, 9);
+			this.lbScanForNewest.MaximumSize = new System.Drawing.Size(370, 44);
+			this.lbScanForNewest.MinimumSize = new System.Drawing.Size(370, 44);
+			this.lbScanForNewest.Name = "lbScanForNewest";
+			this.lbScanForNewest.Size = new System.Drawing.Size(370, 44);
+			this.lbScanForNewest.TabIndex = 30;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1008, 661);
+			this.Controls.Add(this.lbScanForNewest);
+			this.Controls.Add(this.btnScanForNewest);
 			this.Controls.Add(this.lbIgnoreEndingFile);
 			this.Controls.Add(this.rtbIgnoreEndingFile);
 			this.Controls.Add(this.label8);
@@ -366,7 +396,7 @@
 			this.Controls.Add(this.cbHour);
 			this.Controls.Add(this.dateTimePicker);
 			this.Controls.Add(this.lbSource);
-			this.Controls.Add(this.rtbTarget);
+			this.Controls.Add(this.lbTarget);
 			this.Controls.Add(this.btnTarget);
 			this.Controls.Add(this.btnSource);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -381,7 +411,7 @@
 
 		private System.Windows.Forms.Button btnSource;
 		private System.Windows.Forms.Button btnTarget;
-		private System.Windows.Forms.Label rtbTarget;
+		private System.Windows.Forms.Label lbTarget;
 		private System.Windows.Forms.Label lbSource;
 		private System.Windows.Forms.DateTimePicker dateTimePicker;
 		private System.Windows.Forms.ComboBox cbHour;
@@ -406,6 +436,9 @@
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label lbIgnoreEndingFile;
 		private System.Windows.Forms.RichTextBox rtbIgnoreEndingFile;
+		private System.Windows.Forms.Button btnScanForNewest;
+		private System.Windows.Forms.Label lbScanForNewest;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
 

@@ -25,12 +25,16 @@ namespace IncrementalFileCapture
 		private int filesCopied;
 		private int runErrors;
 
+		DateTime resultGetNewestFileDateTime;
+		string resultGetNewestFilename;
+
+
 		public Form1()
 		{
 			InitializeComponent();
 
 			lbSource.Text = Sanitize(lbSource.Text);
-			rtbTarget.Text = Sanitize(rtbTarget.Text);
+			lbTarget.Text = Sanitize(lbTarget.Text);
 
 			// populate Time hour/min/second dropdowns
 
@@ -71,14 +75,23 @@ namespace IncrementalFileCapture
 			sourceFolder.ShowDialog();
 			lbSource.Text = sourceFolder.SelectedPath;
 
-			if (CheckPathRoot(lbSource.Text) == 0) ReadIniFile();
+			toolTip1.SetToolTip(lbSource, lbSource.Text);
+
+			if (CheckPathRoot(lbSource.Text) == 0)
+			{
+				ReadIniFile();
+				toolTip1.SetToolTip(lbTarget, lbTarget.Text);
+			}
 		}
 
 		private void btnTarget_Click(object sender, EventArgs e)
 		{
 			var targetFolder = new FolderBrowserDialog();
 			targetFolder.ShowDialog();
-			rtbTarget.Text = targetFolder.SelectedPath;
+			lbTarget.Text = targetFolder.SelectedPath;
+
+			toolTip1.SetToolTip(lbTarget, lbTarget.Text);
+
 		}
 
 		private void rtbExclusion_Leave(object sender, EventArgs e)
@@ -189,7 +202,7 @@ namespace IncrementalFileCapture
 				}
 
 				WriteIniFileKeyString(iniFilename, "Paths", "sourceDir", lbSource.Text);
-				WriteIniFileKeyString(iniFilename, "Paths", "targetDir", rtbTarget.Text);
+				WriteIniFileKeyString(iniFilename, "Paths", "targetDir", lbTarget.Text);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
 				WriteIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
@@ -265,7 +278,7 @@ namespace IncrementalFileCapture
 					rtbIgnoreEndingFile.Clear();
 
 					ReadIniFileKeyForLabel(iniFilename, "Paths", "sourceDir", lbSource);
-					ReadIniFileKeyForLabel(iniFilename, "Paths", "targetDir", rtbTarget);
+					ReadIniFileKeyForLabel(iniFilename, "Paths", "targetDir", lbTarget);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingDir", rtbIgnoreMatchingDir);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreMatchingFile", rtbIgnoreMatchingFile);
 					ReadIniFileKeyForRTB(iniFilename, "Exclusions", "IgnoreContainingDir", rtbIgnoreContainingDir);
@@ -344,7 +357,7 @@ namespace IncrementalFileCapture
 		{
 			if (
 				lbSource.Text == pleaseSelectText
-				|| rtbTarget.Text == pleaseSelectText
+				|| lbTarget.Text == pleaseSelectText
 				)
 			{
 				LogEntry("ERROR!  Please select valid source and target folders.");
@@ -363,7 +376,7 @@ namespace IncrementalFileCapture
 
 			if(
 				CheckPathRoot(lbSource.Text) == 1
-				|| CheckPathRoot(rtbTarget.Text) == 1
+				|| CheckPathRoot(lbTarget.Text) == 1
 			)
 			{
 				LogEntry("ERROR!  Source and Target cannot be root folders.");
@@ -447,13 +460,8 @@ namespace IncrementalFileCapture
 			{
 				files = root.GetFiles("*.*");
 			}
-			// This is thrown if even one of the files requires permissions greater
-			// than the application provides.
 			catch (UnauthorizedAccessException e)
 			{
-				// This code just writes out the message and continues to recurse.
-				// You may decide to do something different here. For example, you
-				// can try to elevate your privileges and access the file again.
 				LogEntry(e.Message);
 			}
 
@@ -466,12 +474,6 @@ namespace IncrementalFileCapture
 			{
 				foreach (System.IO.FileInfo fi in files)
 				{
-					// In this example, we only access the existing FileInfo object. If we
-					// want to open, delete or modify the file, then
-					// a try-catch block is required here to handle the case
-					// where the file has been deleted since the call to TraverseTree().
-
-
 					if (fi.LastWriteTime.AddTicks(-(fi.LastWriteTime.Ticks % TimeSpan.TicksPerSecond)) > baseDateTime) // discard milliseconds in LastWriteTime
 					// check if file older than compare datetime
 					{
@@ -752,7 +754,7 @@ namespace IncrementalFileCapture
 
 			string targetFilename = sourceFullName.Replace(
 				lbSource.Text
-				, rtbTarget.Text
+				, lbTarget.Text
 			);
 
 			try {
@@ -792,6 +794,93 @@ namespace IncrementalFileCapture
 			{
 				return 0;
 			}
+		}
+
+		private void btnScanForNewest_Click(object sender, EventArgs e)
+		{
+			if (lbSource.Text == pleaseSelectText)
+			{
+				LogEntry("ERROR!  Please select valid source folder to scan.");
+				return;
+			}
+
+			if (
+				CheckPathRoot(lbSource.Text) == 1
+			)
+			{
+				LogEntry("ERROR!  Source cannot be a root folder.");
+				return;
+			}
+
+			btnScanForNewest.Enabled = false;
+
+
+			resultGetNewestFileDateTime = DateTime.MinValue;
+			resultGetNewestFilename = "";
+
+			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(lbSource.Text));
+
+			GetNewestFileTime(root);
+
+			lbScanForNewest.Text = string.Format(
+				"{0}{1}{2}"
+				,resultGetNewestFileDateTime
+				,System.Environment.NewLine
+				,resultGetNewestFilename
+			);
+
+			toolTip1.SetToolTip(lbScanForNewest, lbScanForNewest.Text);
+
+			btnScanForNewest.Enabled = true;
+		}
+
+		private void GetNewestFileTime(DirectoryInfo root)
+		{
+			System.IO.FileInfo[] files = null;
+			System.IO.DirectoryInfo[] subDirs = null;
+
+
+			// First, process all the files directly under this folder
+			try
+			{
+				files = root.GetFiles("*.*");
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				LogEntry(e.Message);
+			}
+
+			catch (System.IO.DirectoryNotFoundException e)
+			{
+				LogEntry(e.Message);
+			}
+
+			if (files != null)
+			{
+				foreach (System.IO.FileInfo fi in files)
+				{
+					if (
+						fi.LastWriteTime > resultGetNewestFileDateTime
+						&& fi.Name != "IFC.ini"
+						)
+																													   // check if file older than compare datetime
+					{
+						// yes
+						resultGetNewestFileDateTime = fi.LastWriteTime;
+						resultGetNewestFilename = fi.FullName;
+					}
+				}
+
+				// Now find all the subdirectories under this directory.
+				subDirs = root.GetDirectories();
+
+				foreach (System.IO.DirectoryInfo dirInfo in subDirs)
+				{
+					// Resursive call for each subdirectory.
+					GetNewestFileTime(dirInfo);
+				}
+			}
+
 		}
 	}
 }
