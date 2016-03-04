@@ -60,6 +60,8 @@
 			this.lbScanForNewest = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.cbPreviewOnly = new System.Windows.Forms.CheckBox();
+			this.btnMakeArchive = new System.Windows.Forms.Button();
+			this.cbAlwaysArchive = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// btnSource
@@ -366,11 +368,36 @@
 			this.cbPreviewOnly.Text = "Preview Only";
 			this.cbPreviewOnly.UseVisualStyleBackColor = true;
 			// 
+			// btnMakeArchive
+			// 
+			this.btnMakeArchive.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnMakeArchive.Location = new System.Drawing.Point(625, 83);
+			this.btnMakeArchive.Name = "btnMakeArchive";
+			this.btnMakeArchive.Size = new System.Drawing.Size(95, 44);
+			this.btnMakeArchive.TabIndex = 32;
+			this.btnMakeArchive.Text = "Make 7zip Archive";
+			this.btnMakeArchive.UseVisualStyleBackColor = true;
+			this.btnMakeArchive.Click += new System.EventHandler(this.btnMakeArchive_Click);
+			// 
+			// cbAlwaysArchive
+			// 
+			this.cbAlwaysArchive.AutoSize = true;
+			this.cbAlwaysArchive.Checked = true;
+			this.cbAlwaysArchive.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.cbAlwaysArchive.Location = new System.Drawing.Point(224, 130);
+			this.cbAlwaysArchive.Name = "cbAlwaysArchive";
+			this.cbAlwaysArchive.Size = new System.Drawing.Size(146, 17);
+			this.cbAlwaysArchive.TabIndex = 33;
+			this.cbAlwaysArchive.Text = "Always Archive After Run";
+			this.cbAlwaysArchive.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1008, 661);
+			this.Controls.Add(this.cbAlwaysArchive);
+			this.Controls.Add(this.btnMakeArchive);
 			this.Controls.Add(this.cbPreviewOnly);
 			this.Controls.Add(this.lbScanForNewest);
 			this.Controls.Add(this.btnScanForNewest);
@@ -440,6 +467,8 @@
 		private System.Windows.Forms.Label lbScanForNewest;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox cbPreviewOnly;
+		private System.Windows.Forms.Button btnMakeArchive;
+		private System.Windows.Forms.CheckBox cbAlwaysArchive;
 	}
 }
 

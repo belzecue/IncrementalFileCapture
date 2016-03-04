@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using Ini;
 
 namespace IncrementalFileCapture
@@ -433,19 +432,50 @@ namespace IncrementalFileCapture
 				)
 			);
 
-			System.IO.DirectoryInfo root = new System.IO.DirectoryInfo(Sanitize(lbSource.Text));
+			DirectoryInfo root = new DirectoryInfo(Sanitize(lbSource.Text));
 			WalkDirectoryTree(root);
+
+			if (!cbPreviewOnly.Checked) MakeTimestampFile();
 
 			btnGo.Enabled = true;
 
 			LogEntry("INFO*  Files copied: " + filesCopied);
 			LogEntry("Error count: " + runErrors);
+
+			if (
+				 !cbPreviewOnly.Checked
+				&& cbAlwaysArchive.Checked
+				&& filesCopied > 0
+			)
+			{
+				MakeArchive(lbTarget.Text);
+			}
+
 			LogEntry("---------- Finished.");
 
 			rtbLog.SelectionStart = rtbLog.Text.Length;
 			rtbLog.ScrollToCaret();
 
 			UpdateLogLabel(rtbLog, lbLog);
+		}
+
+		private bool MakeTimestampFile()
+		{
+			try
+			{
+				StreamWriter sw = File.AppendText(lbTarget.Text + @"\IFC-timestamp.txt");
+				sw.WriteLine("IFC runtime: " + DateTime.Now);
+				sw.WriteLine("Files newer than: " + baseDateTime);
+				sw.WriteLine("Number of files collected: " + filesCopied);
+				sw.Close();
+				return true;
+			}
+			catch (Exception e)
+			{
+				LogEntry("ERROR!  " + e.Message);
+				LogEntry("ERROR!  failed to place timestamp file in: " + lbTarget.Text);
+				return false;
+			}
 		}
 
 		private string Sanitize (string inStr)
@@ -460,7 +490,7 @@ namespace IncrementalFileCapture
 			}
 		}
 
-		private void WalkDirectoryTree(System.IO.DirectoryInfo root)
+		private void WalkDirectoryTree(DirectoryInfo root)
 		{
 			System.IO.FileInfo[] files = null;
 			System.IO.DirectoryInfo[] subDirs = null;
@@ -899,6 +929,27 @@ namespace IncrementalFileCapture
 				}
 			}
 
+		}
+
+		private void MakeArchive (string path)
+		{
+			string nameTime = string.Format("{0:yyMMdd-HHmmss}", DateTime.Now);
+
+			try
+			{
+				string strCmdText = "/K \"7z.exe a \"" + @path + "\\IFC-archive-" + nameTime + ".7z\" -r -x!IFC-archive*.7z \"" + @path + "\"\"";
+				LogEntry("Running console command: CMD.exe " + strCmdText);
+				System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+			}
+			catch (Exception e)
+			{
+				LogEntry("ERROR!  " + e.Message);
+			}
+		}
+
+		private void btnMakeArchive_Click(object sender, EventArgs e)
+		{
+			MakeArchive(lbTarget.Text);
 		}
 	}
 }
