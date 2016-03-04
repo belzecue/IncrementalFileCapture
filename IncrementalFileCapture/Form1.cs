@@ -36,6 +36,16 @@ namespace IncrementalFileCapture
 			lbSource.Text = Sanitize(lbSource.Text);
 			lbTarget.Text = Sanitize(lbTarget.Text);
 
+			toolTip1.SetToolTip(
+				btnSaveConfig
+				, string.Format(
+					"{0}{1}{2}"
+					, "Saves an ini file in Source folder to be"
+					, System.Environment.NewLine
+					, "used in future when that folder is selected."
+				)
+			);
+
 			// populate Time hour/min/second dropdowns
 
 			// hours
@@ -428,7 +438,7 @@ namespace IncrementalFileCapture
 
 			btnGo.Enabled = true;
 
-			LogEntry("INFO* Files copied: " + filesCopied);
+			LogEntry("INFO*  Files copied: " + filesCopied);
 			LogEntry("Error count: " + runErrors);
 			LogEntry("---------- Finished.");
 
@@ -478,13 +488,13 @@ namespace IncrementalFileCapture
 					// check if file older than compare datetime
 					{
 						// yes
-						LogEntry(
-							String.Format(
-								"Collecting file: {0} [{1}]"
-								,fi.FullName
-								,fi.LastWriteTime
-							)
-						);
+						//LogEntry(
+						//	String.Format(
+						//		"Collecting file: {0} [{1}]"
+						//		,fi.FullName
+						//		,fi.LastWriteTime
+						//	)
+						//);
 
 						// copy the file to target, including paths
 
@@ -492,12 +502,12 @@ namespace IncrementalFileCapture
 
 						if ( result == 0)
 						{
-							//LogEntry(
-							//	string.Format(
-							//		"Copied file: {0}"
-							//		, fi.FullName
-							//	)
-							//);
+							LogEntry(
+								string.Format(
+									"INFO*  Copied file: {0}"
+									, fi.FullName
+								)
+							);
 							filesCopied++;
 						}
 						else if (result == -1)
@@ -758,12 +768,20 @@ namespace IncrementalFileCapture
 			);
 
 			try {
-				DirectoryInfo thePath = Directory.CreateDirectory(targetFilename.Replace('\\' + sourceName, ""));
-				File.Copy(
-					sourceFullName
-					, targetFilename
-					, true
-				);
+
+				if (cbPreviewOnly.Checked)
+				{
+					// do nothing
+				}
+				else
+				{
+					DirectoryInfo thePath = Directory.CreateDirectory(targetFilename.Replace('\\' + sourceName, ""));
+					File.Copy(
+						sourceFullName
+						, targetFilename
+						, true
+					);
+				}
 				return 0;
 			}
 			catch (Exception e) {

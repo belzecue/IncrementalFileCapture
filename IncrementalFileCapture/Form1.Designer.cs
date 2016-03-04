@@ -54,12 +54,12 @@
 			this.lbIgnoreMatchingFile = new System.Windows.Forms.Label();
 			this.rtbIgnoreMatchingFile = new System.Windows.Forms.RichTextBox();
 			this.btnSaveConfig = new System.Windows.Forms.Button();
-			this.label8 = new System.Windows.Forms.Label();
 			this.lbIgnoreEndingFile = new System.Windows.Forms.Label();
 			this.rtbIgnoreEndingFile = new System.Windows.Forms.RichTextBox();
 			this.btnScanForNewest = new System.Windows.Forms.Button();
 			this.lbScanForNewest = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.cbPreviewOnly = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// btnSource
@@ -84,7 +84,7 @@
 			this.btnTarget.UseVisualStyleBackColor = true;
 			this.btnTarget.Click += new System.EventHandler(this.btnTarget_Click);
 			// 
-			// rtbTarget
+			// lbTarget
 			// 
 			this.lbTarget.AutoEllipsis = true;
 			this.lbTarget.AutoSize = true;
@@ -93,7 +93,7 @@
 			this.lbTarget.Location = new System.Drawing.Point(126, 83);
 			this.lbTarget.MaximumSize = new System.Drawing.Size(370, 44);
 			this.lbTarget.MinimumSize = new System.Drawing.Size(370, 44);
-			this.lbTarget.Name = "rtbTarget";
+			this.lbTarget.Name = "lbTarget";
 			this.lbTarget.Size = new System.Drawing.Size(370, 44);
 			this.lbTarget.TabIndex = 3;
 			// 
@@ -181,10 +181,10 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(126, 232);
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Location = new System.Drawing.Point(198, 239);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(325, 20);
+			this.label4.Size = new System.Drawing.Size(219, 13);
 			this.label4.TabIndex = 13;
 			this.label4.Text = "Collect all files that are new or changed after:";
 			// 
@@ -302,24 +302,13 @@
 			// btnSaveConfig
 			// 
 			this.btnSaveConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnSaveConfig.Location = new System.Drawing.Point(12, 156);
+			this.btnSaveConfig.Location = new System.Drawing.Point(517, 83);
 			this.btnSaveConfig.Name = "btnSaveConfig";
 			this.btnSaveConfig.Size = new System.Drawing.Size(95, 44);
 			this.btnSaveConfig.TabIndex = 25;
 			this.btnSaveConfig.Text = "Save Config";
 			this.btnSaveConfig.UseVisualStyleBackColor = true;
 			this.btnSaveConfig.Click += new System.EventHandler(this.btnSaveConfig_Click);
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(126, 156);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(307, 40);
-			this.label8.TabIndex = 26;
-			this.label8.Text = "Saves an ini file in Source folder to be\r\nused in future when that folder is sele" +
-    "cted.";
 			// 
 			// lbIgnoreEndingFile
 			// 
@@ -365,16 +354,28 @@
 			this.lbScanForNewest.Size = new System.Drawing.Size(370, 44);
 			this.lbScanForNewest.TabIndex = 30;
 			// 
+			// cbPreviewOnly
+			// 
+			this.cbPreviewOnly.AutoSize = true;
+			this.cbPreviewOnly.Checked = true;
+			this.cbPreviewOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.cbPreviewOnly.Location = new System.Drawing.Point(130, 131);
+			this.cbPreviewOnly.Name = "cbPreviewOnly";
+			this.cbPreviewOnly.Size = new System.Drawing.Size(88, 17);
+			this.cbPreviewOnly.TabIndex = 31;
+			this.cbPreviewOnly.Text = "Preview Only";
+			this.cbPreviewOnly.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1008, 661);
+			this.Controls.Add(this.cbPreviewOnly);
 			this.Controls.Add(this.lbScanForNewest);
 			this.Controls.Add(this.btnScanForNewest);
 			this.Controls.Add(this.lbIgnoreEndingFile);
 			this.Controls.Add(this.rtbIgnoreEndingFile);
-			this.Controls.Add(this.label8);
 			this.Controls.Add(this.btnSaveConfig);
 			this.Controls.Add(this.lbIgnoreContainingFile);
 			this.Controls.Add(this.rtbIgnoreContainingFile);
@@ -433,12 +434,12 @@
 		private System.Windows.Forms.Label lbIgnoreMatchingFile;
 		private System.Windows.Forms.RichTextBox rtbIgnoreMatchingFile;
 		private System.Windows.Forms.Button btnSaveConfig;
-		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label lbIgnoreEndingFile;
 		private System.Windows.Forms.RichTextBox rtbIgnoreEndingFile;
 		private System.Windows.Forms.Button btnScanForNewest;
 		private System.Windows.Forms.Label lbScanForNewest;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.CheckBox cbPreviewOnly;
 	}
 }
 
