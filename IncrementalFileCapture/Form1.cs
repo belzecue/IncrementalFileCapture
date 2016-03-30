@@ -937,7 +937,7 @@ namespace IncrementalFileCapture
 
 			try
 			{
-				string strCmdText = "/K \"7z.exe a \"" + @path + "\\IFC-archive-" + nameTime + ".7z\" -r -x!IFC-archive*.7z \"" + @path + "\"\"";
+				string strCmdText = "/K \"7z.exe a \"" + @path + "\\IFC-archive-" + nameTime + ".7z\" -r -x!IFC-archive*.7z \"" + @path + "\\\"\"";
 				LogEntry("Running console command: CMD.exe " + strCmdText);
 				System.Diagnostics.Process.Start("CMD.exe", strCmdText);
 			}
